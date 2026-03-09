@@ -3,27 +3,22 @@ const navStyle = `
   #global-nav { background: #37b5ff !important; color: white !important; font-family: sans-serif; position: fixed; top: 0; left: 0; width: 100%; z-index: 999999; display: flex; justify-content: space-between; align-items: center; padding: 0 15px; height: 40px; box-sizing: border-box; border-bottom: 2px solid rgba(0,0,0,0.1); }
   .nav-logo { display: flex; align-items: center; gap: 8px; text-decoration: none; color: white !important; font-weight: 800; font-size: 16px; height: 100%; }
   .nav-logo img { height: 28px; width: auto; border-radius: 3px; display: block; }
-  .nav-logo span { line-height: 40px; }
-  
   #nav-links { display: flex; gap: 5px; align-items: center; height: 100%; }
   .nav-item { position: relative; height: 100%; display: flex; align-items: center; }
   .nav-item a, .drop-btn { color: white !important; text-decoration: none; font-size: 11px; font-weight: 600; padding: 0 10px; cursor: pointer; border: none; background: none; display: flex; align-items: center; height: 100%; transition: 0.2s; }
   .nav-item:hover > a, .nav-item:hover > .drop-btn { background: rgba(0,0,0,0.1); }
-  
   .dropdown-content { display: none; position: absolute; background: white; min-width: 180px; top: 40px; left: 0; box-shadow: 0 4px 10px rgba(0,0,0,0.2); border-radius: 0 0 4px 4px; border: 1px solid #ddd; }
   .dropdown-content a { color: #333 !important; border-bottom: 1px solid #eee; padding: 10px 15px; height: auto !important; display: block !important; }
   .dropdown-content a:hover { background: #f0f0f0; color: #37b5ff !important; }
   .nav-item:hover .dropdown-content { display: block; }
-
   #nav-toggle { display: none; color: white; background: rgba(0,0,0,0.2); border: none; padding: 4px 8px; border-radius: 3px; font-weight: bold; font-size: 10px; cursor: pointer; }
-
   @media (max-width: 950px) {
     #nav-toggle { display: block; }
-    #nav-links { display: none; position: absolute; top: 40px; left: 0; width: 100%; background: #37b5ff; flex-direction: column; height: auto; padding: 10px 0; border-bottom: 2px solid rgba(0,0,0,0.1); }
+    #nav-links { display: none; position: absolute; top: 40px; left: 0; width: 100%; background: #37b5ff; flex-direction: column; height: auto; padding: 10px 0; }
     #nav-links.active { display: flex; }
     .nav-item { width: 100%; height: auto; }
     .nav-item a, .drop-btn { padding: 12px 20px; justify-content: center; }
-    .dropdown-content { position: relative; top: 0; width: 100%; background: #f9f9f9; box-shadow: none; border: none; }
+    .dropdown-content { position: relative; top: 0; width: 100%; background: #f9f9f9; }
   }
 </style>
 `;
@@ -40,10 +35,8 @@ const renderNav = () => {
         return u;
     };
 
-    // 1. DASHBOARD HOME
     let html = `<div class="nav-item"><a href="${fix('https://loren-6q.github.io/WETNav/')}" data-type="ignore">Home</a></div>`;
 
-    // 2. BOSS TOOLS (Filtered for BOSS only)
     if (user === 'BOSS') {
         html += `
             <div class="nav-item">
@@ -56,7 +49,6 @@ const renderNav = () => {
             </div>`;
     }
 
-    // 3. EXTERNAL SYSTEMS (BOSS & REC)
     if (user === 'BOSS' || user === 'REC') {
         html += `
             <div class="nav-item">
@@ -77,7 +69,6 @@ const renderNav = () => {
             </div>`;
     }
 
-    // 4. SHARED APPS (Available to BOSS, BAR, and anyone with a code)
     if (user === 'BAR' || user === 'BOSS') {
          html += `<div class="nav-item"><a href="${fix('https://bar-stock-nine.vercel.app/')}" data-type="app">Stock Control</a></div>`;
     }
@@ -97,10 +88,6 @@ const renderNav = () => {
     document.head.insertAdjacentHTML('beforeend', navStyle);
     document.body.prepend(bar);
     document.body.style.paddingTop = "40px";
-
-    if (user) {
-        document.querySelectorAll('a').forEach(a => { a.href = fix(a.href); });
-    }
 
     const btn = document.getElementById('nav-toggle');
     if (btn) btn.onclick = () => document.getElementById('nav-links').classList.toggle('active');
