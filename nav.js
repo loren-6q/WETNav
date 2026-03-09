@@ -87,6 +87,9 @@ const renderNav = () => {
     if (user === 'BAR' || user === 'BOSS') {
          html += `<div class="nav-item"><a href="${fix('https://bar-stock-nine.vercel.app/')}" data-type="ops">Stock</a></div>`;
     }
+    
+    // V CAL ADDED HERE
+    html += `<div class="nav-item"><a href="${fix('https://loren-6q.github.io/WETvCal/')}" data-type="ops">V Cal</a></div>`;
     html += `<div class="nav-item"><a href="${fix('https://loren-6q.github.io/Full-Moon-Week-Schedule/')}" data-type="ops">FMW</a></div>`;
 
     const bar = document.createElement('nav');
