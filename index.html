@@ -8,14 +8,8 @@
         body { background: #111; color: white; font-family: sans-serif; margin: 0; padding-top: 60px; display: flex; flex-direction: column; align-items: center; }
         .hub-container { max-width: 1000px; width: 90%; margin-top: 20px; }
         h2 { color: #37b5ff; border-bottom: 1px solid #333; padding-bottom: 10px; margin-top: 40px; font-size: 18px; letter-spacing: 1px; }
-        
         .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-bottom: 30px; }
-        
-        .card { 
-            background: #1a1a1a; border: 1px solid #333; padding: 25px 15px; border-radius: 8px; 
-            text-decoration: none; color: white; text-align: center; transition: 0.2s;
-            display: flex; flex-direction: column; justify-content: center;
-        }
+        .card { background: #1a1a1a; border: 1px solid #333; padding: 25px 15px; border-radius: 8px; text-decoration: none; color: white; text-align: center; transition: 0.2s; display: flex; flex-direction: column; justify-content: center; }
         .card:hover { border-color: gold; transform: translateY(-3px); background: #222; }
         .card.app { border-left: 4px solid #37b5ff; }
         .card.link { border-left: 4px solid #555; opacity: 0.8; }
@@ -24,11 +18,9 @@
     </style>
 </head>
 <body>
-
     <div class="hub-container">
         <h2 id="title-apps">WET BUSINESS APPS</h2>
         <div id="grid-apps" class="grid"></div>
-
         <h2 id="title-links">EXTERNAL TOOLS & LOGINS</h2>
         <div id="grid-links" class="grid"></div>
     </div>
@@ -36,12 +28,13 @@
     <script src="nav.js"></script>
 
     <script>
-        const buildGrid = () => {
-            const navLinks = document.querySelectorAll('#global-nav a');
+        const buildHub = () => {
             const appGrid = document.getElementById('grid-apps');
             const linkGrid = document.getElementById('grid-links');
+            const navLinks = document.querySelectorAll('#nav-links a');
 
-            // Clear grids to prevent duplicates
+            if (navLinks.length === 0) return;
+
             appGrid.innerHTML = '';
             linkGrid.innerHTML = '';
 
@@ -61,20 +54,17 @@
                 else linkGrid.appendChild(card);
             });
 
-            // Hide sections if empty
-            document.getElementById('title-apps').style.display = appGrid.children.length > 0 ? 'block' : 'none';
-            document.getElementById('title-links').style.display = linkGrid.children.length > 0 ? 'block' : 'none';
+            document.getElementById('title-apps').style.display = appGrid.children.length ? 'block' : 'none';
+            document.getElementById('title-links').style.display = linkGrid.children.length ? 'block' : 'none';
         };
 
-        // This "Observer" waits for nav.js to finish injecting the navigation
-        const observer = new MutationObserver((mutations, obs) => {
-            const nav = document.getElementById('global-nav');
-            if (nav) {
-                buildGrid();
-                obs.disconnect(); // Stop looking once we've found it and built the grid
+        // MutationObserver: Checks if nav.js has added the nav yet
+        const observer = new MutationObserver(() => {
+            if (document.getElementById('nav-links')) {
+                buildHub();
+                observer.disconnect();
             }
         });
-
         observer.observe(document.body, { childList: true, subtree: true });
     </script>
 </body>
