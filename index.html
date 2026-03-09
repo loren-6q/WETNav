@@ -3,61 +3,62 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WET Business Hub</title>
+    <title>WET Hub</title>
     <style>
         body { background: #111; color: white; font-family: sans-serif; margin: 0; padding-top: 60px; display: flex; flex-direction: column; align-items: center; }
-        .hub-container { max-width: 900px; width: 90%; text-align: center; margin-top: 40px; }
-        h1 { color: #37b5ff; margin-bottom: 30px; letter-spacing: 2px; }
+        .hub-container { max-width: 1000px; width: 90%; margin-top: 20px; }
+        h2 { color: #37b5ff; border-bottom: 1px solid #333; padding-bottom: 10px; margin-top: 40px; font-size: 18px; letter-spacing: 1px; }
         
-        /* Grid for the Auto-Buttons */
-        #launchpad { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; width: 100%; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-bottom: 30px; }
         
-        .hub-card { 
-            background: #222; border: 1px solid #333; padding: 30px 20px; border-radius: 12px; 
-            text-decoration: none; color: white; font-weight: bold; font-size: 18px;
-            transition: 0.3s; display: flex; flex-direction: column; align-items: center; gap: 10px;
+        .card { 
+            background: #1a1a1a; border: 1px solid #333; padding: 25px 15px; border-radius: 8px; 
+            text-decoration: none; color: white; text-align: center; transition: 0.2s;
         }
-        .hub-card:hover { background: #333; border-color: gold; transform: translateY(-5px); color: gold; }
-        .hub-card span { font-size: 12px; font-weight: normal; color: #999; }
+        .card:hover { border-color: gold; transform: translateY(-3px); background: #222; }
+        .card.app { border-left: 4px solid #37b5ff; }
+        .card.link { border-left: 4px solid #555; opacity: 0.8; }
+        .card div { font-weight: bold; font-size: 16px; margin-bottom: 5px; }
+        .card span { font-size: 10px; color: #777; text-transform: uppercase; }
     </style>
 </head>
 <body>
 
     <div class="hub-container">
-        <h1>BUSINESS COMMAND CENTER</h1>
-        <div id="launchpad">
-            </div>
+        <h2 id="title-apps">MY BUSINESS APPS</h2>
+        <div id="grid-apps" class="grid"></div>
+
+        <h2 id="title-links">EXTERNAL TOOLS & LOGINS</h2>
+        <div id="grid-links" class="grid"></div>
     </div>
 
     <script src="nav.js"></script>
 
     <script>
-        // Wait for the Nav to finish injecting
         window.addEventListener('load', () => {
-            const launchpad = document.getElementById('launchpad');
-            
-            // Find every link in your global-nav
             const navLinks = document.querySelectorAll('#global-nav a');
+            const appGrid = document.getElementById('grid-apps');
+            const linkGrid = document.getElementById('grid-links');
 
             navLinks.forEach(link => {
-                // Skip the "Home" link and the "Logo" link so we don't loop
-                if (link.innerText === 'WET' || link.innerText === 'Home') return;
+                const type = link.getAttribute('data-type');
+                if (!type || type === 'ignore') return;
 
-                // Create a big card for the dashboard
                 const card = document.createElement('a');
-                card.className = 'hub-card';
+                card.className = `card ${type}`;
                 card.href = link.href;
-                
-                // Clean up the text (remove the arrows/emojis if you want)
-                const cleanText = link.innerText.replace('▾', '').trim();
-                
-                card.innerHTML = `
-                    <div>${cleanText}</div>
-                    <span>Launch Tool ➔</span>
-                `;
-                
-                launchpad.appendChild(card);
+                if (link.target === '_blank') card.target = '_blank';
+
+                const label = type === 'app' ? 'Internal App' : 'External Link';
+                card.innerHTML = `<div>${link.innerText.replace('▾','')}</div><span>${label}</span>`;
+
+                if (type === 'app') appGrid.appendChild(card);
+                else linkGrid.appendChild(card);
             });
+
+            // Hide sections if empty
+            if (appGrid.children.length === 0) document.getElementById('title-apps').style.display = 'none';
+            if (linkGrid.children.length === 0) document.getElementById('title-links').style.display = 'none';
         });
     </script>
 </body>
