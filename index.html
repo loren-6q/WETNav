@@ -14,6 +14,7 @@
         .card { 
             background: #1a1a1a; border: 1px solid #333; padding: 25px 15px; border-radius: 8px; 
             text-decoration: none; color: white; text-align: center; transition: 0.2s;
+            display: flex; flex-direction: column; justify-content: center;
         }
         .card:hover { border-color: gold; transform: translateY(-3px); background: #222; }
         .card.app { border-left: 4px solid #37b5ff; }
@@ -25,7 +26,7 @@
 <body>
 
     <div class="hub-container">
-        <h2 id="title-apps">MY BUSINESS APPS</h2>
+        <h2 id="title-apps">WET Business Suite</h2>
         <div id="grid-apps" class="grid"></div>
 
         <h2 id="title-links">EXTERNAL TOOLS & LOGINS</h2>
@@ -35,10 +36,14 @@
     <script src="nav.js"></script>
 
     <script>
-        window.addEventListener('load', () => {
+        const buildGrid = () => {
             const navLinks = document.querySelectorAll('#global-nav a');
             const appGrid = document.getElementById('grid-apps');
             const linkGrid = document.getElementById('grid-links');
+
+            // Clear grids to prevent duplicates
+            appGrid.innerHTML = '';
+            linkGrid.innerHTML = '';
 
             navLinks.forEach(link => {
                 const type = link.getAttribute('data-type');
@@ -57,9 +62,20 @@
             });
 
             // Hide sections if empty
-            if (appGrid.children.length === 0) document.getElementById('title-apps').style.display = 'none';
-            if (linkGrid.children.length === 0) document.getElementById('title-links').style.display = 'none';
+            document.getElementById('title-apps').style.display = appGrid.children.length > 0 ? 'block' : 'none';
+            document.getElementById('title-links').style.display = linkGrid.children.length > 0 ? 'block' : 'none';
+        };
+
+        // This "Observer" waits for nav.js to finish injecting the navigation
+        const observer = new MutationObserver((mutations, obs) => {
+            const nav = document.getElementById('global-nav');
+            if (nav) {
+                buildGrid();
+                obs.disconnect(); // Stop looking once we've found it and built the grid
+            }
         });
+
+        observer.observe(document.body, { childList: true, subtree: true });
     </script>
 </body>
 </html>
