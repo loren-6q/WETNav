@@ -40,56 +40,61 @@ const renderNav = () => {
         return u;
     };
 
-    // 1. HOME BUTTON (Points back to your WETNav dashboard)
+    // 1. HOME BUTTON
     let html = `<div class="nav-item"><a href="${fix('https://loren-6q.github.io/WETNav/')}" data-type="ignore">Home</a></div>`;
 
-    // 2. BOSS TOOLS (Restored: Salaries and Parser)
+    // 2. BOSS TOOLS (High Level Admin)
     if (user === 'BOSS') {
         html += `
             <div class="nav-item">
-              <span class="drop-btn" style="background:rgba(255,255,255,0.2)">BOSS TOOLS ▾</span>
+              <span class="drop-btn" style="background:rgba(255,255,255,0.2)">ADMIN ▾</span>
               <div class="dropdown-content">
-                <a href="${fix('https://wetsalaries.netlify.app/')}" data-type="app">Salaries</a>
-                <a href="${fix('https://loren-6q.github.io/WETParser/')}" data-type="app">Parser</a>
-                <a href="#" data-type="app">Accounting (Soon)</a>
+                <a href="${fix('https://wetsalaries.netlify.app/')}" data-type="admin">Salaries</a>
+                <a href="${fix('https://loren-6q.github.io/WETParser/')}" data-type="admin">Parser</a>
+                <a href="#" data-type="admin">Accounting</a>
               </div>
             </div>`;
     }
 
-    // 3. PRICING & HOTEL SYSTEMS (Restored: MyAllocator, B.com, HW, Loventis)
+    // 3. EXTERNAL FRONT-END (Price Checking)
     if (user === 'BOSS' || user === 'REC') {
         html += `
             <div class="nav-item">
               <span class="drop-btn">฿ Pricing ▾</span>
               <div class="dropdown-content">
-                <a href="https://inbox.myallocator.com/booknow/-sxO1cCV5jLMwqZTXY629A" target="_blank" data-type="link">WET Booking Engine</a>
-                <a href="https://www.booking.com/searchresults.en-gb.html?dest_id=900050772&dest_type=city&checkin=2026-12-31&checkout=2027-01-01&group_adults=1&no_rooms=1&group_children=0&order=price" target="_blank" data-type="link">Booking.com Search</a>
-                <a href="https://www.hostelworld.com/pwa/s?q=Koh%20Phangan" target="_blank" data-type="link">Hostelworld Search</a>
-              </div>
-            </div>
-            <div class="nav-item">
-              <span class="drop-btn">Hotel Systems ▾</span>
-              <div class="dropdown-content">
-                <a href="https://sg.loventis.net/Reception" target="_blank" data-type="link">Loventis (PMS)</a>
-                <a href="https://inbox.myallocator.com/en/availability/58137" target="_blank" data-type="link">MyAllocator</a>
-                <a href="https://account.booking.com/sign-in" target="_blank" data-type="link">B.com Login</a>
-                <a href="https://inbox.hostelworld.com/" target="_blank" data-type="link">HW Login</a>
+                <a href="https://inbox.myallocator.com/booknow/-sxO1cCV5jLMwqZTXY629A" target="_blank" data-type="sys-front">WET Booking Engine</a>
+                <a href="https://www.booking.com/searchresults.en-gb.html?dest_id=900050772&dest_type=city" target="_blank" data-type="sys-front">B.com Search</a>
+                <a href="https://www.hostelworld.com/pwa/s?q=Koh%20Phangan" target="_blank" data-type="sys-front">HW Search</a>
               </div>
             </div>`;
     }
 
-    // 4. SHARED APPS (Stock and FMW)
-    if (user === 'BAR' || user === 'BOSS') {
-         html += `<div class="nav-item"><a href="${fix('https://bar-stock-nine.vercel.app/')}" data-type="app">Stock</a></div>`;
+    // 4. EXTERNAL BACK-END (Management Tools)
+    if (user === 'BOSS' || user === 'REC') {
+        html += `
+            <div class="nav-item">
+              <span class="drop-btn">Systems ▾</span>
+              <div class="dropdown-content">
+                <a href="https://sg.loventis.net/Reception" target="_blank" data-type="sys-back">Loventis (PMS)</a>
+                <a href="https://inbox.myallocator.com/en/availability/58137" target="_blank" data-type="sys-back">MyAllocator</a>
+                <a href="https://account.booking.com/sign-in" target="_blank" data-type="sys-back">B.com Login</a>
+                <a href="https://inbox.hostelworld.com/" target="_blank" data-type="sys-back">HW Login</a>
+              </div>
+            </div>`;
     }
-    html += `<div class="nav-item"><a href="${fix('https://loren-6q.github.io/Full-Moon-Week-Schedule/')}" data-type="app">FMW</a></div>`;
+
+    // 5. SHARED OPS
+    if (user === 'BAR' || user === 'BOSS') {
+         html += `<div class="nav-item"><a href="${fix('https://bar-stock-nine.vercel.app/')}" data-type="ops">Stock Control</a></div>`;
+    }
+    html += `<div class="nav-item"><a href="${fix('https://loren-6q.github.io/Full-Moon-Week-Schedule/')}" data-type="ops">FMW Schedule</a></div>`;
 
     const bar = document.createElement('nav');
     bar.id = 'global-nav';
     bar.innerHTML = `
         <a href="${fix('https://loren-6q.github.io/WETNav/')}" class="nav-logo">
-            <img src="https://raw.githubusercontent.com/loren-6q/WETNav/main/logo-icon.png" alt="WET Logo">
-            <span>WET</span>
+            <img src="https://raw.githubusercontent.com/loren-6q/WETNav/main/logo-icon.png" alt="WET">
+            <span>WET HUB</span>
         </a>
         <button id="nav-toggle">MENU</button>
         <div id="nav-links">${html}</div>
@@ -99,7 +104,6 @@ const renderNav = () => {
     document.body.prepend(bar);
     document.body.style.paddingTop = "40px";
 
-    // Re-apply link persistence for all links on the page
     if (user) {
         document.querySelectorAll('a').forEach(a => { a.href = fix(a.href); });
     }
