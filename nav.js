@@ -47,7 +47,7 @@ const renderNav = () => {
             <div class="nav-item">
               <span class="drop-btn" style="background:rgba(255,255,255,0.2)">BOSS TOOLS ▾</span>
               <div class="dropdown-content">
-                <a href="${fix('https://loren-6q.github.io/WETSalaries/')}">Salaries</a>
+                <a href="${fix('https://wetsalaries.netlify.app/')}">Salaries</a>
                 <a href="${fix('https://loren-6q.github.io/WETParser/')}">Parser</a>
                 <a href="${fix('https://bar-stock-nine.vercel.app/')}">Stock Control</a>
                 <a href="#">Accounting (Soon)</a>
