@@ -87,7 +87,7 @@ const renderNav = () => {
     bar.innerHTML = `
         <a href="https://wetpoolparty.com" class="nav-logo">
             <img src="https://raw.githubusercontent.com/loren-6q/WETNav/main/logo-icon.png" alt="WET Logo">
-            <span>WET</span>
+            <span>BUSINESS SUITE</span>
         </a>
         <button id="nav-toggle">MENU</button>
         <div id="nav-links">${html}</div>
