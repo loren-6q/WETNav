@@ -85,16 +85,16 @@ const renderNav = () => {
 
     // 5. SHARED OPS
     if (user === 'BAR' || user === 'BOSS') {
-         html += `<div class="nav-item"><a href="${fix('https://bar-stock-nine.vercel.app/')}" data-type="ops">Stock Control</a></div>`;
+         html += `<div class="nav-item"><a href="${fix('https://bar-stock-nine.vercel.app/')}" data-type="ops">Stock</a></div>`;
     }
-    html += `<div class="nav-item"><a href="${fix('https://loren-6q.github.io/Full-Moon-Week-Schedule/')}" data-type="ops">FMW Schedule</a></div>`;
+    html += `<div class="nav-item"><a href="${fix('https://loren-6q.github.io/Full-Moon-Week-Schedule/')}" data-type="ops">FMW</a></div>`;
 
     const bar = document.createElement('nav');
     bar.id = 'global-nav';
     bar.innerHTML = `
         <a href="${fix('https://loren-6q.github.io/WETNav/')}" class="nav-logo">
             <img src="https://raw.githubusercontent.com/loren-6q/WETNav/main/logo-icon.png" alt="WET">
-            <span>WET HUB</span>
+            <span>BUSINESS APP HUB</span>
         </a>
         <button id="nav-toggle">MENU</button>
         <div id="nav-links">${html}</div>
