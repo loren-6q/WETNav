@@ -80,9 +80,9 @@ const renderNav = () => {
 
     // 4. SHARED APPS (Stock and FMW)
     if (user === 'BAR' || user === 'BOSS') {
-         html += `<div class="nav-item"><a href="${fix('https://bar-stock-nine.vercel.app/')}" data-type="app">Stock Control</a></div>`;
+         html += `<div class="nav-item"><a href="${fix('https://bar-stock-nine.vercel.app/')}" data-type="app">Stock</a></div>`;
     }
-    html += `<div class="nav-item"><a href="${fix('https://loren-6q.github.io/Full-Moon-Week-Schedule/')}" data-type="app">FMW Schedule</a></div>`;
+    html += `<div class="nav-item"><a href="${fix('https://loren-6q.github.io/Full-Moon-Week-Schedule/')}" data-type="app">FMW</a></div>`;
 
     const bar = document.createElement('nav');
     bar.id = 'global-nav';
