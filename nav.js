@@ -7,11 +7,11 @@ const navStyle = `
   
   #nav-links { display: flex; gap: 5px; align-items: center; height: 100%; }
   .nav-item { position: relative; height: 100%; display: flex; align-items: center; }
-  .nav-item a, .drop-btn { color: white !important; text-decoration: none; font-size: 11px; font-weight: 600; padding: 0 10px; cursor: pointer; border: none; background: none; display: flex; align-items: center; height: 100%; transition: 0.2s; }
+  .nav-item a, .drop-btn { color: white !important; text-decoration: none; font-size: 11px; font-weight: 600; padding: 0 10px; cursor: pointer; border: none; background: none; display: flex; align-items: center; height: 100%; transition: 0.2s; gap: 6px; }
   .nav-item:hover > a, .nav-item:hover > .drop-btn { background: rgba(0,0,0,0.1); }
   
-  .dropdown-content { display: none; position: absolute; background: white; min-width: 180px; top: 40px; left: 0; box-shadow: 0 4px 10px rgba(0,0,0,0.2); border-radius: 0 0 4px 4px; border: 1px solid #ddd; }
-  .dropdown-content a { color: #333 !important; border-bottom: 1px solid #eee; padding: 10px 15px; height: auto !important; display: block !important; }
+  .dropdown-content { display: none; position: absolute; background: white; min-width: 200px; top: 40px; left: 0; box-shadow: 0 4px 10px rgba(0,0,0,0.2); border-radius: 0 0 4px 4px; border: 1px solid #ddd; }
+  .dropdown-content a { color: #333 !important; border-bottom: 1px solid #eee; padding: 10px 15px; height: auto !important; display: flex !important; align-items: center; gap: 10px; }
   .dropdown-content a:hover { background: #f0f0f0; color: #37b5ff !important; }
   .nav-item:hover .dropdown-content { display: block; }
 
@@ -41,17 +41,17 @@ const renderNav = () => {
     };
 
     // 1. HOME BUTTON
-    let html = `<div class="nav-item"><a href="${fix('https://loren-6q.github.io/WETNav/')}" data-type="ignore">Home</a></div>`;
+    let html = `<div class="nav-item"><a href="${fix('https://loren-6q.github.io/WETNav/')}" data-type="ignore">🏠 Home</a></div>`;
 
     // 2. BOSS TOOLS (High Level Admin)
     if (user === 'BOSS') {
         html += `
             <div class="nav-item">
-              <span class="drop-btn" style="background:rgba(255,255,255,0.2)">ADMIN ▾</span>
+              <span class="drop-btn" style="background:rgba(255,255,255,0.2)">💼 ADMIN ▾</span>
               <div class="dropdown-content">
-                <a href="${fix('https://wetsalaries.netlify.app/')}" data-type="admin">Salaries</a>
-                <a href="${fix('https://loren-6q.github.io/WETParser/')}" data-type="admin">Parser</a>
-                <a href="#" data-type="admin">Accounting</a>
+                <a href="${fix('https://wetsalaries.netlify.app/')}" data-type="admin">💰 Salaries</a>
+                <a href="${fix('https://loren-6q.github.io/WETParser/')}" data-type="admin">📑 Parser</a>
+                <a href="#" data-type="admin">🏦 Accounting</a>
               </div>
             </div>`;
     }
@@ -62,9 +62,9 @@ const renderNav = () => {
             <div class="nav-item">
               <span class="drop-btn">฿ Pricing ▾</span>
               <div class="dropdown-content">
-                <a href="https://inbox.myallocator.com/booknow/-sxO1cCV5jLMwqZTXY629A" target="_blank" data-type="sys-front">WET Booking Engine</a>
-                <a href="https://www.booking.com/searchresults.en-gb.html?dest_id=900050772&dest_type=city" target="_blank" data-type="sys-front">B.com Search</a>
-                <a href="https://www.hostelworld.com/pwa/s?q=Koh%20Phangan" target="_blank" data-type="sys-front">HW Search</a>
+                <a href="https://inbox.myallocator.com/booknow/-sxO1cCV5jLMwqZTXY629A" target="_blank" data-type="sys-front">🏨 WET Booking Engine</a>
+                <a href="https://www.booking.com/searchresults.en-gb.html?dest_id=900050772&dest_type=city" target="_blank" data-type="sys-front">🔵 B.com Search</a>
+                <a href="https://www.hostelworld.com/pwa/s?q=Koh%20Phangan" target="_blank" data-type="sys-front">🟠 HW Search</a>
               </div>
             </div>`;
     }
@@ -73,31 +73,31 @@ const renderNav = () => {
     if (user === 'BOSS' || user === 'REC') {
         html += `
             <div class="nav-item">
-              <span class="drop-btn">Systems ▾</span>
+              <span class="drop-btn">⚙️ Systems ▾</span>
               <div class="dropdown-content">
-                <a href="https://sg.loventis.net/Reception" target="_blank" data-type="sys-back">Loventis (PMS)</a>
-                <a href="https://inbox.myallocator.com/en/availability/58137" target="_blank" data-type="sys-back">MyAllocator</a>
-                <a href="https://account.booking.com/sign-in" target="_blank" data-type="sys-back">B.com Login</a>
-                <a href="https://inbox.hostelworld.com/" target="_blank" data-type="sys-back">HW Login</a>
+                <a href="https://sg.loventis.net/Reception" target="_blank" data-type="sys-back">🏩 Loventis (PMS)</a>
+                <a href="https://inbox.myallocator.com/en/availability/58137" target="_blank" data-type="sys-back">🔑 MyAllocator</a>
+                <a href="https://docs.google.com/spreadsheets/d/1UqivgGUjV0JAO2vB4QFjdw0c62pSsdlMsna-z4xE_SQ/edit?usp=sharing" target="_blank" data-type="sys-back">💸 Refundability</a>
+                <a href="https://account.booking.com/sign-in" target="_blank" data-type="sys-back">🛂 B.com Login</a>
+                <a href="https://inbox.hostelworld.com/" target="_blank" data-type="sys-back">🛂 HW Login</a>
               </div>
             </div>`;
     }
 
     // 5. SHARED OPS
     if (user === 'BAR' || user === 'BOSS') {
-         html += `<div class="nav-item"><a href="${fix('https://bar-stock-nine.vercel.app/')}" data-type="ops">Stock</a></div>`;
+         html += `<div class="nav-item"><a href="${fix('https://bar-stock-nine.vercel.app/')}" data-type="ops">🍺 Stock</a></div>`;
     }
     
-    // V CAL ADDED HERE
-    html += `<div class="nav-item"><a href="${fix('https://loren-6q.github.io/WETvCal/')}" data-type="ops">V Cal</a></div>`;
-    html += `<div class="nav-item"><a href="${fix('https://loren-6q.github.io/Full-Moon-Week-Schedule/')}" data-type="ops">FMW</a></div>`;
+    html += `<div class="nav-item"><a href="${fix('https://loren-6q.github.io/WETvCal/')}" data-type="ops">🗓️ V Cal</a></div>`;
+    html += `<div class="nav-item"><a href="${fix('https://loren-6q.github.io/Full-Moon-Week-Schedule/')}" data-type="ops">🌕 FMW</a></div>`;
 
     const bar = document.createElement('nav');
     bar.id = 'global-nav';
     bar.innerHTML = `
         <a href="${fix('https://loren-6q.github.io/WETNav/')}" class="nav-logo">
             <img src="https://raw.githubusercontent.com/loren-6q/WETNav/main/logo-icon.png" alt="WET">
-            <span>BUSINESS APP HUB</span>
+            <span>BUSINESS HUB</span>
         </a>
         <button id="nav-toggle">MENU</button>
         <div id="nav-links">${html}</div>
