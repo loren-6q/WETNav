@@ -13,7 +13,7 @@
         button { cursor: pointer; border: none; border-radius: 4px; font-weight: bold; padding: 10px 20px; transition: 0.2s; }
         button:hover { opacity: 0.8; }
         .btn-gen { background: gold; color: black; font-size: 18px; width: 100%; margin-top: 20px; }
-        pre, textarea#importBox { background: #000; padding: 20px; color: #adff2f; font-size: 11px; border: 1px solid #334155; width: 100%; box-sizing: border-box; min-height: 100px; }
+        pre, textarea#importBox { background: #000; padding: 20px; color: #adff2f; font-size: 11px; border: 1px solid #334155; width: 100%; box-sizing: border-box; min-height: 120px; }
     </style>
 </head>
 <body>
@@ -73,25 +73,38 @@
 
         function importNav() {
             const code = document.getElementById('importBox').value;
-            // Smarter regex that looks for standard <a> tags with our data attributes
-            const regex = /<a\s+href=".*?'(.*?)'.*?data-type="(.*?)".*?data-icon="(.*?)".*?data-desc="(.*?)".*?>(.*?)<\/a>/g;
+            // universal regex to grab anything between backticks that looks like a link
+            const linkRegex = /<a\s+[^>]*?href=["']?([^"'>\s]+)["']?[^>]*?>(.*?)<\/a>/gi;
             
             let match;
             apps = [];
-            while ((match = regex.exec(code)) !== null) {
+            while ((match = linkRegex.exec(code)) !== null) {
+                const fullTag = match[0];
+                const rawUrl = match[1].replace(/fix\(['"]|['"]\)/g, '').replace(/\${fix\(['"]|['"]\)}/g, '');
+                const name = match[2].replace(/<[^>]*>?/gm, ''); // Remove inner tags if any
+                
+                // Exclude the 'Home' link
+                if (name.toLowerCase() === 'home') continue;
+
+                // Extract data-attributes if they exist, otherwise use defaults
+                const type = (fullTag.match(/data-type="([^"]*)"/) || [null, 'ops'])[1];
+                const icon = (fullTag.match(/data-icon="([^"]*)"/) || [null, '🔗'])[1];
+                const desc = (fullTag.match(/data-desc="([^"]*)"/) || [null, ''])[1];
+
                 apps.push({
-                    url: match[1],
-                    type: match[2],
-                    icon: match[3],
-                    desc: match[4],
-                    name: match[5],
-                    roles: ['BOSS'] // Defaulting to BOSS on import to be safe
+                    url: rawUrl,
+                    type: type,
+                    icon: icon,
+                    desc: desc,
+                    name: name,
+                    roles: ['BOSS'] // Defaulting to BOSS on import
                 });
             }
 
             if (apps.length === 0) {
-                alert("Could not find any apps in the code. Please make sure you're pasting the full nav.js content.");
+                alert("No apps found. Ensure you are pasting the full code from nav.js.");
             } else {
+                alert("Found " + apps.length + " apps!");
                 render();
             }
         }
@@ -108,7 +121,11 @@
 
         function copyToClipboard() {
             const el = document.getElementById('code-box');
-            navigator.clipboard.writeText(el.innerText);
+            const range = document.createRange();
+            range.selectNode(el);
+            window.getSelection().removeAllRanges();
+            window.getSelection().addRange(range);
+            document.execCommand('copy');
             alert("Code copied to clipboard!");
         }
 
