@@ -36,7 +36,7 @@ const renderNav = () => {
 
     // 1. ACCOUNTING (BOSS)
     if (user === 'BOSS') {
-        html += '<div class="nav-item"><span class="drop-btn">Accounting ▾</span><div class="dropdown-content">' +
+        html += '<div class="nav-item"><span class="drop-btn">Acct ▾</span><div class="dropdown-content">' +
                 '<a href="#" data-type="admin" data-icon="🏦" data-desc="WET overall accounting. (coming soon)">Accounting</a>' +
                 '<a href="' + fix('https://wetsalaries.netlify.app/') + '" data-type="admin" data-icon="💰" data-desc="Staff payroll.">Salaries</a>' +
                 '</div></div>';
@@ -60,15 +60,7 @@ const renderNav = () => {
                 '</div></div>';
     }
 
-    // 4. STAFFING (BOSS, REC)
-    if (user === 'BOSS' || user === 'REC') {
-        html += '<div class="nav-item"><span class="drop-btn">Staffing ▾</span><div class="dropdown-content">' +
-                '<a href="' + fix('https://loren-6q.github.io/WETvCal/') + '" data-type="ops" data-icon="🗓️" data-desc="Calendar for stay dates of temp workers.">V Cal</a>' +
-                '<a href="' + fix('https://staff-scheduler.onrender.com/') + '" target="_blank" data-type="ops" data-icon="📅" data-desc="Schedule part-time staff.">Scheduler</a>' +
-                '</div></div>';
-    }
-
-    // 5. PRICE QUOTES (BOSS, REC)
+  // 4. PRICE QUOTES (BOSS, REC)
     if (user === 'BOSS' || user === 'REC') {
         html += '<div class="nav-item"><span class="drop-btn">Quotes ▾</span><div class="dropdown-content">' +
                 '<a href="https://inbox.myallocator.com/booknow/-sxO1cCV5jLMwqZTXY629A" target="_blank" data-type="sys-front" data-icon="🏨" data-desc="Direct rates.">WET Booking Engine</a>' +
@@ -76,6 +68,14 @@ const renderNav = () => {
                 '<a href="https://www.hostelworld.com/pwa/s?q=Koh%20Phangan" target="_blank" data-type="sys-front" data-icon="🟠" data-desc="Hostelworld search.">HW Search</a>' +
                 '<a href="https://www.booking.com/hotel/th/wet-pool-party-haad-rin.html" target="_blank" data-type="sys-front" data-icon="🔗" data-desc="Direct link to WET on Booking .com.">WET on B.com</a>' +
                 '<a href="https://www.hostelworld.com/pwa/hosteldetails.php/WET-a-Pool-Party-Hostel-by-Wild-Wandering/Koh-Phangan/313418" target="_blank" data-type="sys-front" data-icon="🔗" data-desc="Direct link to WET on Hostelworld.">WET on HW</a>' +
+                '</div></div>';
+    }
+
+    // 5. STAFFING (BOSS, REC)
+    if (user === 'BOSS' || user === 'REC') {
+        html += '<div class="nav-item"><span class="drop-btn">Staffing ▾</span><div class="dropdown-content">' +
+                '<a href="' + fix('https://loren-6q.github.io/WETvCal/') + '" data-type="ops" data-icon="🗓️" data-desc="Calendar for stay dates of temp workers.">V Cal</a>' +
+                '<a href="' + fix('https://staff-scheduler.onrender.com/') + '" target="_blank" data-type="ops" data-icon="📅" data-desc="Schedule part-time staff.">Scheduler</a>' +
                 '</div></div>';
     }
 
