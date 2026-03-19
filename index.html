@@ -6,168 +6,88 @@
     <title>WET Business Hub</title>
     <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/loren-6q/WETNav/main/favicon.png">
     <style>
-        :root { 
-            --wet-blue: #37b5ff; 
-            --bg-dark: #0f172a;
-            --card-bg: #1e293b;
-            --border: #334155;
-        }
-        body { 
-            background: var(--bg-dark); 
-            color: #f1f5f9; 
-            font-family: system-ui, -apple-system, sans-serif; 
-            margin: 0; 
-            padding-top: 60px; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-        }
+        :root { --wet-blue: #37b5ff; --bg: #0f172a; --card: #1e293b; --border: #334155; }
+        body { background: var(--bg); color: #f1f5f9; font-family: system-ui, sans-serif; margin: 0; padding-top: 60px; display: flex; flex-direction: column; align-items: center; }
         .hub-container { max-width: 1100px; width: 95%; margin-top: 20px; padding-bottom: 80px; }
-        
-        header { text-align: left; width: 100%; margin-bottom: 10px; border-left: 4px solid gold; padding-left: 15px; }
-        header h1 { font-size: 28px; font-weight: 900; margin: 0; letter-spacing: -0.5px; }
-        header p { color: #64748b; font-size: 11px; text-transform: uppercase; font-weight: 800; letter-spacing: 1.5px; margin-top: 4px; }
-
-        h2 { 
-            color: var(--wet-blue); 
-            border-bottom: 1px solid #1e293b; 
-            padding-bottom: 8px; 
-            margin-top: 45px; 
-            font-size: 12px; 
-            letter-spacing: 2.5px; 
-            text-transform: uppercase;
-            font-weight: 800;
-        }
-        
+        header { display: flex; justify-content: space-between; align-items: flex-start; width: 100%; border-left: 4px solid gold; padding-left: 15px; margin-bottom: 30px; }
+        header h1 { font-size: 28px; font-weight: 900; margin: 0; }
+        header p { color: #64748b; font-size: 11px; text-transform: uppercase; font-weight: 800; margin-top: 4px; }
+        .admin-link { color: #475569; text-decoration: none; font-size: 20px; transition: 0.2s; }
+        .admin-link:hover { color: gold; }
+        h2 { color: var(--wet-blue); border-bottom: 1px solid var(--border); padding-bottom: 8px; margin-top: 40px; font-size: 12px; letter-spacing: 2px; text-transform: uppercase; font-weight: 800; }
         .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; margin-top: 15px; }
-        
-        .card { 
-            background: var(--card-bg); 
-            border: 1px solid var(--border); 
-            padding: 24px; 
-            border-radius: 12px; 
-            text-decoration: none; 
-            color: white; 
-            transition: all 0.25s ease;
-            display: flex; 
-            flex-direction: column; 
-            position: relative;
-            overflow: hidden;
-        }
-        .card:hover { border-color: gold; transform: translateY(-4px); background: #26334d; box-shadow: 0 12px 24px rgba(0,0,0,0.4); }
-        
-        /* Category Coloring */
-        .card.admin { border-top: 4px solid #ef4444; }
-        .card.ops { border-top: 4px solid var(--wet-blue); }
-        .card.sys-front { border-top: 4px solid #10b981; }
-        .card.sys-back { border-top: 4px solid #6366f1; }
-        
-        .card .title { font-weight: 800; font-size: 18px; margin-bottom: 4px; display: block; }
-        .card .emoji { font-size: 28px; margin-bottom: 12px; display: block; }
-        .card .desc { font-size: 12px; color: #94a3b8; line-height: 1.5; font-weight: 400; margin-top: 4px; }
-
-        #status-msg { margin-top: 100px; color: #475569; font-style: italic; }
+        .card { background: var(--card); border: 1px solid var(--border); padding: 24px; border-radius: 12px; text-decoration: none; color: white; transition: 0.2s; display: flex; flex-direction: column; }
+        .card:hover { border-color: gold; transform: translateY(-4px); box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
+        .card .emoji { font-size: 24px; margin-bottom: 8px; }
+        .card .title { font-weight: 800; font-size: 17px; }
+        .card .desc { font-size: 12px; color: #94a3b8; margin-top: 6px; line-height: 1.4; }
         .hidden { display: none !important; }
     </style>
 </head>
 <body>
-
     <div class="hub-container">
         <header>
-            <h1>BUSINESS HUB</h1>
-            <p id="role-tag">Validating credentials...</p>
+            <div>
+                <h1>WET BUSINESS HUB</h1>
+                <p id="role-tag">Validating...</p>
+            </div>
+            <a href="admin.html" class="admin-link" title="Hub Settings">⚙️</a>
         </header>
 
-        <section id="sec-admin" class="hidden">
-            <h2>Management & Admin</h2>
-            <div id="grid-admin" class="grid"></div>
-        </section>
+        <section id="sec-accounting" class="hidden"><h2>Accounting</h2><div id="grid-accounting" class="grid"></div></section>
+        <section id="sec-admin" class="hidden"><h2>Administration</h2><div id="grid-admin" class="grid"></div></section>
+        <section id="sec-booking" class="hidden"><h2>Booking & Reservations</h2><div id="grid-booking" class="grid"></div></section>
+        <section id="sec-quotes" class="hidden"><h2>Price Quotes</h2><div id="grid-quotes" class="grid"></div></section>
+        <section id="sec-staffing" class="hidden"><h2>Staffing & HR</h2><div id="grid-staffing" class="grid"></div></section>
+        <section id="sec-ops" class="hidden"><h2>Operations</h2><div id="grid-ops" class="grid"></div></section>
 
-        <section id="sec-ops" class="hidden">
-            <h2>Operations & Bar</h2>
-            <div id="grid-ops" class="grid"></div>
-        </section>
-
-        <section id="sec-sys-front" class="hidden">
-            <h2>Public Pricing & Bookings</h2>
-            <div id="grid-sys-front" class="grid"></div>
-        </section>
-
-        <section id="sec-sys-back" class="hidden">
-            <h2>Backend Systems & Logins</h2>
-            <div id="grid-sys-back" class="grid"></div>
-        </section>
-
-        <div id="status-msg">Assembling your workspace...</div>
+        <div id="status-msg" style="margin-top:50px; color:#475569;">Building your workspace...</div>
     </div>
 
     <script src="nav.js"></script>
-
     <script>
         const buildDashboard = () => {
-            // Check if nav has loaded yet
             const navLinks = document.querySelectorAll('#global-nav a');
             if (navLinks.length === 0) return false;
 
-            // Handle User Identification
             const user = new URLSearchParams(window.location.search).get('user') || 'Staff';
             document.getElementById('role-tag').textContent = `ACCESS LEVEL: ${user}`;
 
             const groups = {
+                accounting: { grid: document.getElementById('grid-accounting'), sec: document.getElementById('sec-accounting'), count: 0 },
                 admin: { grid: document.getElementById('grid-admin'), sec: document.getElementById('sec-admin'), count: 0 },
-                ops: { grid: document.getElementById('grid-ops'), sec: document.getElementById('sec-ops'), count: 0 },
-                'sys-front': { grid: document.getElementById('grid-sys-front'), sec: document.getElementById('sec-sys-front'), count: 0 },
-                'sys-back': { grid: document.getElementById('grid-sys-back'), sec: document.getElementById('sec-sys-back'), count: 0 }
+                booking: { grid: document.getElementById('grid-booking'), sec: document.getElementById('sec-booking'), count: 0 },
+                staffing: { grid: document.getElementById('grid-staffing'), sec: document.getElementById('sec-staffing'), count: 0 },
+                quotes: { grid: document.getElementById('grid-quotes'), sec: document.getElementById('sec-quotes'), count: 0 },
+                ops: { grid: document.getElementById('grid-ops'), sec: document.getElementById('sec-ops'), count: 0 }
             };
 
-            // Clear existing content to prevent duplicates
-            Object.values(groups).forEach(g => {
-                g.grid.innerHTML = '';
-                g.sec.classList.add('hidden');
-            });
+            Object.values(groups).forEach(g => { g.grid.innerHTML = ''; g.sec.classList.add('hidden'); });
 
             navLinks.forEach(link => {
                 const type = link.getAttribute('data-type');
                 if (!type || !groups[type]) return;
 
-                // Extract metadata stored in nav.js
-                const emoji = link.getAttribute('data-icon') || '🔗';
-                const desc = link.getAttribute('data-desc') || 'Click to open application.';
-                const cleanName = link.innerText.trim();
-
                 const card = document.createElement('a');
-                card.className = `card ${type}`;
+                card.className = 'card';
                 card.href = link.href;
                 if (link.target === '_blank') card.target = '_blank';
-
+                
                 card.innerHTML = `
-                    <span class="emoji">${emoji}</span>
-                    <span class="title">${cleanName}</span>
-                    <span class="desc">${desc}</span>
+                    <span class="emoji">${link.getAttribute('data-icon') || '🔗'}</span>
+                    <span class="title">${link.innerText}</span>
+                    <span class="desc">${link.getAttribute('data-desc') || ''}</span>
                 `;
-
                 groups[type].grid.appendChild(card);
                 groups[type].count++;
             });
 
-            // Show sections that have at least one card
-            Object.values(groups).forEach(g => {
-                if (g.count > 0) g.sec.classList.remove('hidden');
-            });
-            
+            Object.values(groups).forEach(g => { if (g.count > 0) g.sec.classList.remove('hidden'); });
             document.getElementById('status-msg').classList.add('hidden');
             return true;
         };
-
-        // Watch for when the nav.js injects the links into the DOM
-        const observer = new MutationObserver(() => { 
-            if (buildDashboard()) observer.disconnect(); 
-        });
-        
+        const observer = new MutationObserver(() => { if (buildDashboard()) observer.disconnect(); });
         observer.observe(document.body, { childList: true, subtree: true });
-        
-        // Fallback for slow loads
-        window.addEventListener('load', () => setTimeout(buildDashboard, 500));
     </script>
 </body>
 </html>
