@@ -37,6 +37,7 @@ const renderNav = () => {
         html += '<div class="nav-item"><span class="drop-btn">ADMIN ▾</span><div class="dropdown-content">' +
                 '<a href="' + fix('https://wetsalaries.netlify.app/') + '" data-type="admin" data-icon="💰" data-desc="Staff payroll.">Salaries</a>' +
                 '<a href="' + fix('https://loren-6q.github.io/WETParser/') + '" data-type="admin" data-icon="📑" data-desc="Clean AirBnB, Booking .com and CC data.">Parser</a>' +
+                '<a href="' + fix('https://loren-6q.github.io/WETReviews/') + '" data-type="admin" data-icon="✍" data-desc="Review response generator.">Reviews</a>' +
                 '<a href="#" data-type="admin" data-icon="🏦" data-desc="WET overall accounting. (coming soon)">Accounting</a>' +
                 '</div></div>';
     }
