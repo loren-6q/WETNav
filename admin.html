@@ -2,39 +2,66 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Hub Configurator | WET</title>
+    <title>WET Hub Configurator</title>
     <style>
-        body { background: #0f172a; color: white; font-family: sans-serif; padding: 30px; }
+        :root { --blue: #37b5ff; --bg: #0f172a; --card: #1e293b; }
+        body { background: var(--bg); color: white; font-family: sans-serif; padding: 20px; }
         .container { max-width: 900px; margin: 0 auto; }
-        .app-item { background: #1e293b; border: 1px solid #334155; padding: 15px; border-radius: 8px; margin-bottom: 10px; }
-        .row { display: flex; gap: 10px; margin-bottom: 8px; }
-        input, textarea, select { background: #0f172a; border: 1px solid #334155; color: white; padding: 8px; border-radius: 4px; }
-        .perms { font-size: 11px; background: rgba(0,0,0,0.2); padding: 8px; border-radius: 4px; margin-top: 8px; }
-        button { cursor: pointer; border: none; border-radius: 4px; font-weight: bold; padding: 10px 20px; }
-        .btn-add { background: #37b5ff; color: white; }
-        .btn-gen { background: gold; color: black; font-size: 16px; width: 100%; margin-top: 20px; }
-        pre { background: #000; padding: 20px; color: #adff2f; font-size: 11px; border: 1px solid gold; white-space: pre-wrap; margin-top: 20px; }
+        .app-item { background: var(--card); border: 1px solid #334155; padding: 15px; border-radius: 8px; margin-bottom: 12px; }
+        .row { display: flex; gap: 8px; margin-bottom: 8px; }
+        input, textarea, select { background: #0f172a; border: 1px solid #334155; color: white; padding: 8px; border-radius: 4px; font-size: 13px; }
+        .perms { font-size: 11px; display: flex; gap: 10px; align-items: center; background: rgba(0,0,0,0.3); padding: 8px; border-radius: 4px; }
+        button { cursor: pointer; border: none; border-radius: 4px; font-weight: bold; transition: 0.2s; }
+        .btn-add { background: var(--blue); color: white; padding: 10px 20px; }
+        .btn-gen { background: gold; color: black; font-size: 18px; width: 100%; padding: 15px; margin: 20px 0; }
+        .btn-save { background: #10b981; color: white; padding: 10px 20px; }
+        pre { background: #000; padding: 20px; color: #adff2f; font-size: 11px; border: 1px solid gold; white-space: pre-wrap; }
+        .delete-btn { background: #ef4444; color: white; padding: 4px 8px; font-size: 10px; margin-left: auto; }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Hub Configurator</h1>
+        <h1>WET Hub Configurator</h1>
+        <p style="color: #94a3b8; font-size: 13px;">Manage apps and permissions. Updates save to your browser automatically.</p>
+        
         <div id="app-list"></div>
-        <button class="btn-add" onclick="addApp()">+ Add New App</button>
+        
+        <div style="display: flex; gap: 10px;">
+            <button class="btn-add" onclick="addApp()">+ Add App</button>
+            <button class="btn-save" onclick="saveToBrowser()">💾 Manual Save</button>
+        </div>
+
         <button class="btn-gen" onclick="generate()">🚀 Generate nav.js Code</button>
+
         <div id="output" style="display:none">
-            <h3>Copy and overwrite your nav.js file:</h3>
+            <h3>Copy and overwrite your <b>nav.js</b>:</h3>
             <pre id="code-box"></pre>
         </div>
     </div>
 
     <script>
-        let apps = JSON.parse(localStorage.getItem('wet_hub_db')) || [
+        const defaultApps = [
+            { name: 'Accounting', url: '#', type: 'accounting', icon: '🏦', desc: 'WET overall accounting. (coming soon)', roles: ['BOSS'] },
             { name: 'Salaries', url: 'https://wetsalaries.netlify.app/', type: 'accounting', icon: '💰', desc: 'Staff payroll.', roles: ['BOSS'] },
             { name: 'MyAllocator', url: 'https://inbox.myallocator.com/en/availability/58137', type: 'admin', icon: '🔑', desc: 'Channel manager.', roles: ['BOSS', 'REC'] },
+            { name: 'B.com Login', url: 'https://account.booking.com/sign-in', type: 'admin', icon: '🛂', desc: 'Booking .com Extranet.', roles: ['BOSS', 'REC'] },
+            { name: 'HW Login', url: 'https://inbox.hostelworld.com/', type: 'admin', icon: '🛂', desc: 'Hostelworld Extranet.', roles: ['BOSS', 'REC'] },
             { name: 'Loventis (PMS)', url: 'https://sg.loventis.net/Reception', type: 'booking', icon: '🏩', desc: 'Reservation management.', roles: ['BOSS', 'REC'] },
-            { name: 'Scheduler', url: 'https://staff-scheduler.onrender.com/', type: 'staffing', icon: '📅', desc: 'Schedule part-time staff.', roles: ['BOSS', 'REC'] }
+            { name: 'Refundability', url: 'https://docs.google.com/spreadsheets/d/1UqivgGUjV0JAO2vB4QFjdw0c62pSsdlMsna-z4xE_SQ/edit?usp=sharing', type: 'booking', icon: '💸', desc: 'Are Hostelworld bookings refundable?', roles: ['BOSS', 'REC'] },
+            { name: 'Parser', url: 'https://loren-6q.github.io/WETParser/', type: 'booking', icon: '📑', desc: 'Clean AirBnB, Booking .com and CC data.', roles: ['BOSS', 'REC'] },
+            { name: 'WET Booking Engine', url: 'https://inbox.myallocator.com/booknow/-sxO1cCV5jLMwqZTXY629A', type: 'quotes', icon: '🏨', desc: 'Direct rates.', roles: ['BOSS', 'REC'] },
+            { name: 'B.com Search', url: 'https://www.booking.com/searchresults.en-gb.html?dest_id=900050772&dest_type=city', type: 'quotes', icon: '🔵', desc: 'Booking .com search.', roles: ['BOSS', 'REC'] },
+            { name: 'HW Search', url: 'https://www.hostelworld.com/pwa/s?q=Koh%20Phangan', type: 'quotes', icon: '🟠', desc: 'Hostelworld search.', roles: ['BOSS', 'REC'] },
+            { name: 'WET on B.com', url: 'https://www.booking.com/hotel/th/wet-pool-party-haad-rin.html', type: 'quotes', icon: '🔗', desc: 'Direct link to WET on Booking .com.', roles: ['BOSS', 'REC'] },
+            { name: 'WET on HW', url: 'https://www.hostelworld.com/pwa/hosteldetails.php/WET-a-Pool-Party-Hostel-by-Wild-Wandering/Koh-Phangan/313418', type: 'quotes', icon: '🔗', desc: 'Direct link to WET on Hostelworld.', roles: ['BOSS', 'REC'] },
+            { name: 'V Cal', url: 'https://loren-6q.github.io/WETvCal/', type: 'staffing', icon: '🗓️', desc: 'Calendar for stay dates of temp workers.', roles: ['BOSS', 'REC'] },
+            { name: 'Scheduler', url: 'https://staff-scheduler.onrender.com/', type: 'staffing', icon: '📅', desc: 'Schedule part-time staff.', roles: ['BOSS', 'REC'] },
+            { name: 'POS', url: '#', type: 'ops', icon: '💳', desc: 'Point of sale for each department. (coming soon)', roles: ['BOSS', 'BAR'] },
+            { name: 'Stock', url: 'https://bar-stock-nine.vercel.app/', type: 'ops', icon: '🍺', desc: 'Bar & Hostel stock check, ordering, and inventory.', roles: ['BOSS', 'BAR'] },
+            { name: 'FMW', url: 'https://loren-6q.github.io/Full-Moon-Week-Schedule/', type: 'ops', icon: '🌕', desc: 'Full Moon Week Instagram publishing tool.', roles: ['BOSS', 'BAR'] }
         ];
+
+        let apps = JSON.parse(localStorage.getItem('wet_hub_v4')) || defaultApps;
 
         function render() {
             const list = document.getElementById('app-list');
@@ -43,56 +70,76 @@
                 list.innerHTML += `
                     <div class="app-item">
                         <div class="row">
-                            <input type="text" value="${app.name}" oninput="apps[${i}].name=this.value" placeholder="Name" style="flex:1">
-                            <input type="text" value="${app.icon}" oninput="apps[${i}].icon=this.value" placeholder="Icon" style="width:40px">
-                            <select onchange="apps[${i}].type=this.value">
+                            <input type="text" value="${app.name}" oninput="update(${i},'name',this.value)" placeholder="App Name" style="flex:2">
+                            <input type="text" value="${app.icon}" oninput="update(${i},'icon',this.value)" placeholder="Icon" style="flex:0.5; text-align:center">
+                            <select onchange="update(${i},'type',this.value)" style="flex:1">
                                 <option value="accounting" ${app.type==='accounting'?'selected':''}>Accounting</option>
                                 <option value="admin" ${app.type==='admin'?'selected':''}>Admin</option>
                                 <option value="booking" ${app.type==='booking'?'selected':''}>Booking</option>
-                                <option value="staffing" ${app.type==='staffing'?'selected':''}>Staffing</option>
                                 <option value="quotes" ${app.type==='quotes'?'selected':''}>Quotes</option>
-                                <option value="ops" ${app.type==='ops'?'selected':''}>Ops</option>
+                                <option value="staffing" ${app.type==='staffing'?'selected':''}>Staffing</option>
+                                <option value="ops" ${app.type==='ops'?'selected':''}>Operations</option>
                             </select>
                         </div>
-                        <input type="text" value="${app.url}" oninput="apps[${i}].url=this.value" placeholder="URL" style="width:97%">
-                        <textarea oninput="apps[${i}].desc=this.value" style="width:97%; height:40px; margin-top:5px;">${app.desc}</textarea>
+                        <input type="text" value="${app.url}" oninput="update(${i},'url',this.value)" placeholder="URL" style="width:98%; margin-bottom:5px;">
+                        <textarea oninput="update(${i},'desc',this.value)" style="width:98%; height:35px;">${app.desc}</textarea>
                         <div class="perms">
                             Roles: ${['BOSS', 'REC', 'BAR', 'OA'].map(r => `
                                 <label><input type="checkbox" ${app.roles.includes(r)?'checked':''} onchange="toggleRole(${i},'${r}')"> ${r}</label>
                             `).join('')}
-                            <button onclick="apps.splice(${i},1); render();" style="float:right; background:red; color:white; padding:2px 10px;">Delete</button>
+                            <button class="delete-btn" onclick="remove(${i})">Delete</button>
                         </div>
                     </div>`;
             });
-            localStorage.setItem('wet_hub_db', JSON.stringify(apps));
+            saveToBrowser();
         }
 
+        function update(i, k, v) { apps[i][k] = v; }
+        function remove(i) { apps.splice(i,1); render(); }
+        function addApp() { apps.push({name:'', url:'', type:'ops', icon:'🔗', desc:'', roles:['BOSS']}); render(); }
         function toggleRole(i, r) {
             let idx = apps[i].roles.indexOf(r);
             idx > -1 ? apps[i].roles.splice(idx,1) : apps[i].roles.push(r);
-            render();
         }
-
-        function addApp() { apps.push({name:'', url:'', type:'ops', icon:'🔗', desc:'', roles:['BOSS']}); render(); }
+        function saveToBrowser() { localStorage.setItem('wet_hub_v4', JSON.stringify(apps)); }
 
         function generate() {
+            const types = ['accounting', 'admin', 'booking', 'quotes', 'staffing', 'ops'];
+            const typeLabels = ['Acct', 'Admin', 'Booking', 'Quotes', 'Staffing', 'Ops'];
             let logic = "";
-            apps.forEach(app => {
-                const roles = app.roles.map(r => `'${r}'`).join(',');
-                logic += `    if ([${roles}].includes(user)) html += \`<a href="\${fix('${app.url}')}" target="_blank" data-type="${app.type}" data-icon="${app.icon}" data-desc="${app.desc}">${app.name}</a>\`;\n`;
+
+            types.forEach((type, idx) => {
+                let typeApps = apps.filter(a => a.type === type);
+                if(typeApps.length === 0) return;
+
+                logic += `    // ${typeLabels[idx]}\n    let group_${type} = "";\n`;
+                typeApps.forEach(app => {
+                    const roles = app.roles.map(r => `'${r}'`).join(',');
+                    const target = app.url.startsWith('http') && !app.url.includes('github.io') ? 'target="_blank"' : '';
+                    logic += `    if ([${roles}].includes(user)) group_${type} += \`<a href="\${fix('${app.url}')}" ${target} data-type="${type}" data-icon="${app.icon}" data-desc="${app.desc}">${app.name}</a>\`;\n`;
+                });
+                logic += `    if (group_${type}) html += \`<div class="nav-item"><span class="drop-btn">${typeLabels[idx]} ▾</span><div class="dropdown-content">\${group_${type}}</div></div>\`;\n\n`;
             });
 
-            document.getElementById('code-box').innerText = `const navStyle = \`<style>#global-nav { background: #37b5ff; color: white; font-family: sans-serif; position: fixed; top: 0; left: 0; width: 100%; z-index: 999999; display: flex; justify-content: space-between; align-items: center; padding: 0 15px; height: 40px; } .nav-logo { display: flex; align-items: center; gap: 8px; text-decoration: none; color: white; font-weight: 800; font-size: 14px; } .nav-logo img { height: 24px; } #nav-links { display: flex; gap: 5px; height: 100%; } .nav-item { display: flex; align-items: center; } .nav-item a { color: white; text-decoration: none; font-size: 11px; font-weight: 600; padding: 0 10px; text-transform: uppercase; }</style>\`;
+            const code = `const navStyle = \`<style>#global-nav{background:#37b5ff!important;color:white!important;font-family:sans-serif;position:fixed;top:0;left:0;width:100%;z-index:999999;display:flex;justify-content:space-between;align-items:center;padding:0 15px;height:40px;box-sizing:border-box;border-bottom:2px solid rgba(0,0,0,0.1)}.nav-logo{display:flex;align-items:center;gap:8px;text-decoration:none;color:white!important;font-weight:800;font-size:14px;height:100%}.nav-logo img{height:24px;width:auto;border-radius:3px;display:block}#nav-links{display:flex;gap:5px;align-items:center;height:100%}.nav-item{position:relative;height:100%;display:flex;align-items:center}.nav-item a,.drop-btn{color:white!important;text-decoration:none;font-size:10px;font-weight:700;padding:0 10px;cursor:pointer;border:none;background:none;display:flex;align-items:center;height:100%;transition:.2s;text-transform:uppercase;letter-spacing:.5px}.nav-item:hover>a,.nav-item:hover>.drop-btn{background:rgba(0,0,0,0.1)}.dropdown-content{display:none;position:absolute;background:white;min-width:200px;top:40px;left:0;box-shadow:0 4px 15px rgba(0,0,0,0.2);border-radius:0 0 4px 4px}.dropdown-content a{color:#333!important;border-bottom:1px solid #eee;padding:12px 15px;height:auto!important;display:block!important;text-transform:none;letter-spacing:normal;font-size:12px}.dropdown-content a:hover{background:#f8fafc;color:#37b5ff!important}.nav-item:hover .dropdown-content{display:block}@media(max-width:950px){#nav-links{display:none;position:absolute;top:40px;left:0;width:100%;background:#37b5ff;flex-direction:column;height:auto;padding:10px 0}#nav-links.active{display:flex}.nav-item{width:100%;height:auto}.nav-item a,.drop-btn{padding:15px 20px;justify-content:center}.dropdown-content{position:relative;top:0;width:100%;background:#f1f5f9;box-shadow:none}}</style>\`;
 const renderNav = () => {
+    if (document.getElementById('global-nav')) return;
     const user = new URLSearchParams(window.location.search).get('user') || 'Staff';
-    const fix = (u) => (['github.io','vercel.app','onrender.com'].some(d => u.includes(d)) && !u.includes('user=')) ? u + (u.includes('?') ? '&' : '?') + 'user=' + user : u;
-    let html = '<div class="nav-item"><a href="' + fix('https://loren-6q.github.io/WETNav/') + '">Home</a></div>';
+    const fix = (u) => {
+        if (!user || u === '#' || u.includes('user=')) return u;
+        const sep = u.includes('?') ? '&' : '?';
+        const domains = ['github.io', 'netlify.app', 'vercel.app', 'wildandwandering.com', 'wetpoolparty.com', 'onrender.com'];
+        return domains.some(d => u.includes(d)) ? u + sep + 'user=' + user : u;
+    };
+    let html = '<div class="nav-item"><a href="' + fix('https://loren-6q.github.io/WETNav/') + '" data-type="ignore">Home</a></div>';
 ${logic}
-    document.head.insertAdjacentHTML('beforeend', navStyle);
     const bar = document.createElement('nav'); bar.id = 'global-nav';
-    bar.innerHTML = '<a href="' + fix('https://loren-6q.github.io/WETNav/') + '" class="nav-logo">HUB</a><div id="nav-links">' + html + '</div>';
+    bar.innerHTML = \`<a href="\${fix('https://loren-6q.github.io/WETNav/')}" class="nav-logo"><img src="https://raw.githubusercontent.com/loren-6q/WETNav/main/logo-icon.png"><span>WET BUSINESS HUB</span></a><div id="nav-links">\${html}</div>\`;
+    document.head.insertAdjacentHTML('beforeend', navStyle);
     document.body.prepend(bar); document.body.style.paddingTop = "40px";
+    const btn = document.getElementById('nav-toggle'); if (btn) btn.onclick = () => document.getElementById('nav-links').classList.toggle('active');
 }; renderNav();`;
+            document.getElementById('code-box').innerText = code;
             document.getElementById('output').style.display = 'block';
         }
         render();
