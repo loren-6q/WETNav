@@ -28,74 +28,71 @@ const renderNav = () => {
         if (!user || u === '#' || u.includes('user=')) return u;
         const sep = u.includes('?') ? '&' : '?';
         const domains = ['github.io', 'netlify.app', 'vercel.app', 'wildandwandering.com', 'wetpoolparty.com', 'onrender.com'];
-        if (domains.some(d => u.includes(d))) return u + sep + 'user=' + user;
-        return u;
+        return domains.some(d => u.includes(d)) ? u + sep + 'user=' + user : u;
     };
 
-    let html = '<div class="nav-item"><a href="' + fix('https://loren-6q.github.io/WETNav/') + '" data-type="ignore">Home</a></div>';
+    let html = `<div class="nav-item"><a href="${fix('https://loren-6q.github.io/WETNav/')}" data-type="ignore">Home</a></div>`;
 
-    // 1. ACCOUNTING
+    // Acct
     if (user === 'BOSS') {
-        html += '<div class="nav-item"><span class="drop-btn">Acct ▾</span><div class="dropdown-content">' +
-                '<a href="#" data-type="accounting" data-icon="🏦" data-desc="WET overall accounting. (coming soon)">Accounting</a>' +
-                '<a href="' + fix('https://wetsalaries.netlify.app/') + '" data-type="accounting" data-icon="💰" data-desc="Staff payroll.">Salaries</a>' +
-                '</div></div>';
+        html += `<div class="nav-item"><span class="drop-btn">Acct ▾</span><div class="dropdown-content">` +
+                `<a href="#" data-type="accounting" data-icon="🏦" data-desc="WET overall accounting. (coming soon)">Accounting</a>` +
+                `<a href="${fix('https://wetsalaries.netlify.app/')}" data-type="accounting" data-icon="💰" data-desc="Staff payroll.">Salaries</a>` +
+                `</div></div>`;
     }
 
-    // 2. ADMIN
-    if (user === 'BOSS' || user === 'REC') {
-        html += '<div class="nav-item"><span class="drop-btn">Admin ▾</span><div class="dropdown-content">' +
-                '<a href="https://inbox.myallocator.com/en/availability/58137" target="_blank" data-type="admin" data-icon="🔑" data-desc="Channel manager.">MyAllocator</a>' +
-                '<a href="https://account.booking.com/sign-in" target="_blank" data-type="admin" data-icon="🛂" data-desc="Booking .com Extranet.">B.com Login</a>' +
-                '<a href="https://inbox.hostelworld.com/" target="_blank" data-type="admin" data-icon="🛂" data-desc="Hostelworld Extranet.">HW Login</a>' +
-                '</div></div>';
+    // Admin
+    if (['BOSS', 'REC'].includes(user)) {
+        html += `<div class="nav-item"><span class="drop-btn">Admin ▾</span><div class="dropdown-content">` +
+                `<a href="https://inbox.myallocator.com/en/availability/58137" target="_blank" data-type="admin" data-icon="🔑" data-desc="Channel manager.">MyAllocator</a>` +
+                `<a href="https://account.booking.com/sign-in" target="_blank" data-type="admin" data-icon="🛂" data-desc="Booking .com Extranet.">B.com Login</a>` +
+                `<a href="https://inbox.hostelworld.com/" target="_blank" data-type="admin" data-icon="🛂" data-desc="Hostelworld Extranet.">HW Login</a>` +
+                `</div></div>`;
     }
 
-    // 3. BOOKING
-    if (user === 'BOSS' || user === 'REC') {
-        html += '<div class="nav-item"><span class="drop-btn">Booking ▾</span><div class="dropdown-content">' +
-                '<a href="https://sg.loventis.net/Reception" target="_blank" data-type="booking" data-icon="🏩" data-desc="Reservation management.">Loventis (PMS)</a>' +
-                '<a href="https://docs.google.com/spreadsheets/d/1UqivgGUjV0JAO2vB4QFjdw0c62pSsdlMsna-z4xE_SQ/edit?usp=sharing" target="_blank" data-type="booking" data-icon="💸" data-desc="Are Hostelworld bookings refundable?">Refundability</a>' +
-                '<a href="' + fix('https://loren-6q.github.io/WETParser/') + '" data-type="booking" data-icon="📑" data-desc="Clean AirBnB, Booking .com and CC data.">Parser</a>' +
-                '</div></div>';
+    // Booking
+    if (['BOSS', 'REC', 'OA'].includes(user)) {
+        html += `<div class="nav-item"><span class="drop-btn">Booking ▾</span><div class="dropdown-content">` +
+                `<a href="https://sg.loventis.net/Reception" target="_blank" data-type="booking" data-icon="🏩" data-desc="Reservation management.">Loventis (PMS)</a>` +
+                `<a href="https://docs.google.com/spreadsheets/d/1UqivgGUjV0JAO2vB4QFjdw0c62pSsdlMsna-z4xE_SQ/edit?usp=sharing" target="_blank" data-type="booking" data-icon="💸" data-desc="Are Hostelworld bookings refundable?">Refundability</a>` +
+                `<a href="${fix('https://loren-6q.github.io/WETParser/')}" data-type="booking" data-icon="📑" data-desc="Clean AirBnB, Booking .com and CC data.">Parser</a>` +
+                `</div></div>`;
     }
 
-    // 4. QUOTES
-    if (user === 'BOSS' || user === 'REC') {
-        html += '<div class="nav-item"><span class="drop-btn">Quotes ▾</span><div class="dropdown-content">' +
-                '<a href="https://inbox.myallocator.com/booknow/-sxO1cCV5jLMwqZTXY629A" target="_blank" data-type="quotes" data-icon="🏨" data-desc="Direct rates.">WET Booking Engine</a>' +
-                '<a href="https://www.booking.com/searchresults.en-gb.html?dest_id=900050772&dest_type=city" target="_blank" data-type="quotes" data-icon="🔵" data-desc="Booking .com search.">B.com Search</a>' +
-                '<a href="https://www.hostelworld.com/pwa/s?q=Koh%20Phangan" target="_blank" data-type="quotes" data-icon="🟠" data-desc="Hostelworld search.">HW Search</a>' +
-                '<a href="https://www.booking.com/hotel/th/wet-pool-party-haad-rin.html" target="_blank" data-type="quotes" data-icon="🔗" data-desc="Direct link to WET on Booking .com.">WET on B.com</a>' +
-                '<a href="https://www.hostelworld.com/pwa/hosteldetails.php/WET-a-Pool-Party-Hostel-by-Wild-Wandering/Koh-Phangan/313418" target="_blank" data-type="quotes" data-icon="🔗" data-desc="Direct link to WET on Hostelworld.">WET on HW</a>' +
-                '</div></div>';
+    // Quotes
+    if (['BOSS', 'REC'].includes(user)) {
+        html += `<div class="nav-item"><span class="drop-btn">Quotes ▾</span><div class="dropdown-content">` +
+                `<a href="https://inbox.myallocator.com/booknow/-sxO1cCV5jLMwqZTXY629A" target="_blank" data-type="quotes" data-icon="🏨" data-desc="Direct rates.">WET Booking Engine</a>` +
+                `<a href="https://www.booking.com/searchresults.en-gb.html?dest_id=900050772&dest_type=city" target="_blank" data-type="quotes" data-icon="🔵" data-desc="Booking .com search.">B.com Search</a>` +
+                `<a href="https://www.hostelworld.com/pwa/s?q=Koh%20Phangan" target="_blank" data-type="quotes" data-icon="🟠" data-desc="Hostelworld search.">HW Search</a>` +
+                `<a href="https://www.booking.com/hotel/th/wet-pool-party-haad-rin.html" target="_blank" data-type="quotes" data-icon="🔗" data-desc="Direct link to WET on Booking .com.">WET on B.com</a>` +
+                `<a href="https://www.hostelworld.com/pwa/hosteldetails.php/WET-a-Pool-Party-Hostel-by-Wild-Wandering/Koh-Phangan/313418" target="_blank" data-type="quotes" data-icon="🔗" data-desc="Direct link to WET on Hostelworld.">WET on HW</a>` +
+                `</div></div>`;
     }
 
-    // 5. STAFFING
-    if (user === 'BOSS' || user === 'REC') {
-        html += '<div class="nav-item"><span class="drop-btn">Staffing ▾</span><div class="dropdown-content">' +
-                '<a href="' + fix('https://loren-6q.github.io/WETvCal/') + '" data-type="staffing" data-icon="🗓️" data-desc="Calendar for stay dates of temp workers.">V Cal</a>' +
-                '<a href="' + fix('https://staff-scheduler.onrender.com/') + '" target="_blank" data-type="staffing" data-icon="📅" data-desc="Schedule part-time staff.">Scheduler</a>' +
-                '</div></div>';
+    // Staffing
+    if (['BOSS', 'REC', 'OA'].includes(user)) {
+        html += `<div class="nav-item"><span class="drop-btn">Staffing ▾</span><div class="dropdown-content">` +
+                `<a href="${fix('https://loren-6q.github.io/WETvCal/')}" data-type="staffing" data-icon="🗓️" data-desc="Calendar for stay dates of temp workers.">V Cal</a>` +
+                `<a href="${fix('https://staff-scheduler.onrender.com/')}" target="_blank" data-type="staffing" data-icon="📅" data-desc="Schedule part-time staff.">Scheduler</a>` +
+                `</div></div>`;
     }
 
-    // 6. OPS
-    if (user === 'BOSS' || user === 'BAR') {
-        html += '<div class="nav-item"><span class="drop-btn">Ops ▾</span><div class="dropdown-content">' +
-                '<a href="#" data-type="ops" data-icon="💳" data-desc="Point of sale for each department. (coming soon)">POS</a>' +
-                '<a href="' + fix('https://bar-stock-nine.vercel.app/') + '" data-type="ops" data-icon="🍺" data-desc="Bar & Hostel stock check, ordering, and inventory.">Stock</a>' +
-                '<a href="' + fix('https://loren-6q.github.io/Full-Moon-Week-Schedule/') + '" data-type="ops" data-icon="🌕" data-desc="Full Moon Week Instagram publishing tool.">FMW</a>' +
-                '</div></div>';
+    // Ops
+    if (['BOSS', 'BAR', 'REC'].includes(user)) {
+        html += `<div class="nav-item"><span class="drop-btn">Ops ▾</span><div class="dropdown-content">` +
+                `<a href="#" data-type="ops" data-icon="💳" data-desc="Point of sale for each department. (coming soon)">POS</a>` +
+                `<a href="${fix('https://bar-stock-nine.vercel.app/')}" data-type="ops" data-icon="🍺" data-desc="Bar & Hostel stock check, ordering, and inventory.">Stock</a>` +
+                `<a href="${fix('https://loren-6q.github.io/Full-Moon-Week-Schedule/')}" data-type="ops" data-icon="🌕" data-desc="Full Moon Week Instagram publishing tool.">FMW</a>` +
+                `</div></div>`;
     }
 
     const bar = document.createElement('nav');
     bar.id = 'global-nav';
-    bar.innerHTML = '<a href="' + fix('https://loren-6q.github.io/WETNav/') + '" class="nav-logo"><img src="https://raw.githubusercontent.com/loren-6q/WETNav/main/logo-icon.png"><span>WET BUSINESS HUB</span></a><div id="nav-links">' + html + '</div>';
-    
+    bar.innerHTML = `<a href="${fix('https://loren-6q.github.io/WETNav/')}" class="nav-logo"><img src="https://raw.githubusercontent.com/loren-6q/WETNav/main/logo-icon.png"><span>WET BUSINESS HUB</span></a><div id="nav-links">${html}</div>`;
     document.head.insertAdjacentHTML('beforeend', navStyle);
     document.body.prepend(bar);
     document.body.style.paddingTop = "40px";
-
     const btn = document.getElementById('nav-toggle');
     if (btn) btn.onclick = () => document.getElementById('nav-links').classList.toggle('active');
 };
