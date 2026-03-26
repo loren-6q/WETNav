@@ -6,28 +6,28 @@ document.head.appendChild(fontLink);
 
 const navStyle = `<style>
   /* GLOBAL NAV BAR */
-  #global-nav { background: #37b5ff !important; color: white !important; font-family: 'Archivo Narrow', sans-serif; position: fixed; top: 0; left: 0; width: 100%; z-index: 1000000; display: flex; justify-content: space-between; align-items: center; padding: 0 15px; height: 40px; box-sizing: border-box; }
-  .nav-logo { display: flex; align-items: center; gap: 8px; text-decoration: none; color: white !important; font-weight: 700; font-size: 14px; }
-  .nav-logo img { height: 24px; width: auto; border-radius: 3px; }
+  #global-nav { background: #37b5ff !important; color: white !important; font-family: 'Archivo Narrow', sans-serif; position: fixed; top: 0; left: 0; width: 100%; z-index: 1000000; display: flex; justify-content: space-between; align-items: center; padding: 0 10px; height: 40px; box-sizing: border-box; }
+  .nav-logo { display: flex; align-items: center; gap: 6px; text-decoration: none; color: white !important; font-weight: 700; font-size: 14px; white-space: nowrap; }
+  .nav-logo img { height: 22px; width: auto; border-radius: 3px; }
   
-  /* DESKTOP LINKS - CONDENSED */
-  #nav-links { display: flex; gap: 2px; align-items: center; height: 100%; }
+  /* DESKTOP LINKS - MAX EFFICIENCY */
+  #nav-links { display: flex; gap: 0; align-items: center; height: 100%; }
   .nav-item { position: relative; height: 100%; display: flex; align-items: center; }
-  .nav-item a, .drop-btn { color: white !important; text-decoration: none; font-size: 11px; font-weight: 600; padding: 0 7px; cursor: pointer; border: none; background: none; display: flex; align-items: center; height: 100%; text-transform: uppercase; transition: 0.2s; }
+  .nav-item a, .drop-btn { color: white !important; text-decoration: none; font-size: 10.5px; font-weight: 600; padding: 0 6px; cursor: pointer; border: none; background: none; display: flex; align-items: center; height: 100%; text-transform: uppercase; transition: 0.2s; white-space: nowrap; }
   .nav-item:hover > a, .nav-item:hover > .drop-btn { background: rgba(0,0,0,0.1); }
   
   /* DESKTOP DROPDOWNS */
-  .dropdown-content { display: none; position: absolute; background: white; min-width: 180px; top: 40px; left: 0; box-shadow: 0 4px 15px rgba(0,0,0,0.2); border-radius: 0 0 4px 4px; border: 1px solid #ddd; }
-  .dropdown-content a { color: #333 !important; border-bottom: 1px solid #eee; padding: 10px 15px !important; height: auto !important; display: block !important; text-transform: none; font-size: 13px; }
+  .dropdown-content { display: none; position: absolute; background: white; min-width: 170px; top: 40px; left: 0; box-shadow: 0 4px 15px rgba(0,0,0,0.2); border-radius: 0 0 4px 4px; border: 1px solid #ddd; }
+  .dropdown-content a { color: #333 !important; border-bottom: 1px solid #eee; padding: 10px 12px !important; height: auto !important; display: block !important; text-transform: none; font-size: 12.5px; }
   .dropdown-content a:hover { background: #f8fafc; color: #37b5ff !important; }
   .nav-item:hover .dropdown-content { display: block; }
 
-  /* MOBILE TOGGLE & CLOSE BUTTONS */
-  #nav-toggle { display: none; color: black; background: gold; border: none; padding: 4px 10px; border-radius: 4px; font-weight: 700; font-size: 11px; cursor: pointer; font-family: 'Archivo Narrow', sans-serif; }
-  #nav-close { display: none; width: 100%; text-align: right; padding: 10px 20px; box-sizing: border-box; background: #e2e8f0; color: #475569; font-weight: 700; cursor: pointer; border: none; font-size: 16px; }
+  /* MOBILE TOGGLE & CLOSE */
+  #nav-toggle { display: none; color: black; background: gold; border: none; padding: 4px 8px; border-radius: 4px; font-weight: 700; font-size: 10px; cursor: pointer; font-family: 'Archivo Narrow', sans-serif; }
+  #nav-close { display: none; width: 100%; text-align: right; padding: 12px 20px; box-sizing: border-box; background: #f1f5f9; color: #475569; font-weight: 700; cursor: pointer; border: none; font-size: 14px; border-bottom: 1px solid #e2e8f0; }
 
-  /* MOBILE DRAWER SYSTEM */
-  @media (max-width: 1000px) {
+  /* NEW 700PX BREAKPOINT - SAVES 300PX OF SPACE */
+  @media (max-width: 700px) {
     #nav-toggle { display: block !important; }
     #nav-links { 
         display: block !important; 
@@ -41,6 +41,7 @@ const navStyle = `<style>
         padding: 0;
         box-shadow: -5px 0 25px rgba(0,0,0,0.4);
         overflow-y: auto;
+        z-index: 1000001;
     }
     #nav-links.active { transform: translateX(-310px); }
     #nav-close { display: block; }
