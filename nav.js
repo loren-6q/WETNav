@@ -1,66 +1,62 @@
+/* Import Condensed Font */
+const fontLink = document.createElement('link');
+fontLink.rel = 'stylesheet';
+fontLink.href = 'https://fonts.googleapis.com/css2?family=Archivo+Narrow:wght@600;700&display=swap';
+document.head.appendChild(fontLink);
+
 const navStyle = `<style>
   /* GLOBAL NAV BAR */
-  #global-nav { background: #37b5ff !important; color: white !important; font-family: sans-serif; position: fixed; top: 0; left: 0; width: 100%; z-index: 1000000; display: flex; justify-content: space-between; align-items: center; padding: 0 15px; height: 40px; box-sizing: border-box; }
-  .nav-logo { display: flex; align-items: center; gap: 8px; text-decoration: none; color: white !important; font-weight: 800; font-size: 14px; }
+  #global-nav { background: #37b5ff !important; color: white !important; font-family: 'Archivo Narrow', sans-serif; position: fixed; top: 0; left: 0; width: 100%; z-index: 1000000; display: flex; justify-content: space-between; align-items: center; padding: 0 15px; height: 40px; box-sizing: border-box; }
+  .nav-logo { display: flex; align-items: center; gap: 8px; text-decoration: none; color: white !important; font-weight: 700; font-size: 14px; }
   .nav-logo img { height: 24px; width: auto; border-radius: 3px; }
   
-  /* DESKTOP LINKS */
-  #nav-links { display: flex; gap: 5px; align-items: center; height: 100%; }
+  /* DESKTOP LINKS - CONDENSED */
+  #nav-links { display: flex; gap: 2px; align-items: center; height: 100%; }
   .nav-item { position: relative; height: 100%; display: flex; align-items: center; }
-  .nav-item a, .drop-btn { color: white !important; text-decoration: none; font-size: 10px; font-weight: 700; padding: 0 10px; cursor: pointer; border: none; background: none; display: flex; align-items: center; height: 100%; text-transform: uppercase; letter-spacing: 0.5px; }
+  .nav-item a, .drop-btn { color: white !important; text-decoration: none; font-size: 11px; font-weight: 600; padding: 0 7px; cursor: pointer; border: none; background: none; display: flex; align-items: center; height: 100%; text-transform: uppercase; transition: 0.2s; }
   .nav-item:hover > a, .nav-item:hover > .drop-btn { background: rgba(0,0,0,0.1); }
   
   /* DESKTOP DROPDOWNS */
-  .dropdown-content { display: none; position: absolute; background: white; min-width: 200px; top: 40px; left: 0; box-shadow: 0 4px 15px rgba(0,0,0,0.2); border-radius: 0 0 4px 4px; border: 1px solid #ddd; }
-  .dropdown-content a { color: #333 !important; border-bottom: 1px solid #eee; padding: 12px 15px !important; height: auto !important; display: block !important; text-transform: none; font-size: 12px; }
+  .dropdown-content { display: none; position: absolute; background: white; min-width: 180px; top: 40px; left: 0; box-shadow: 0 4px 15px rgba(0,0,0,0.2); border-radius: 0 0 4px 4px; border: 1px solid #ddd; }
+  .dropdown-content a { color: #333 !important; border-bottom: 1px solid #eee; padding: 10px 15px !important; height: auto !important; display: block !important; text-transform: none; font-size: 13px; }
   .dropdown-content a:hover { background: #f8fafc; color: #37b5ff !important; }
   .nav-item:hover .dropdown-content { display: block; }
 
-  /* MOBILE TOGGLE BUTTON */
-  #nav-toggle { display: none; color: black; background: gold; border: none; padding: 4px 12px; border-radius: 4px; font-weight: 900; font-size: 11px; cursor: pointer; }
+  /* MOBILE TOGGLE & CLOSE BUTTONS */
+  #nav-toggle { display: none; color: black; background: gold; border: none; padding: 4px 10px; border-radius: 4px; font-weight: 700; font-size: 11px; cursor: pointer; font-family: 'Archivo Narrow', sans-serif; }
+  #nav-close { display: none; width: 100%; text-align: right; padding: 10px 20px; box-sizing: border-box; background: #e2e8f0; color: #475569; font-weight: 700; cursor: pointer; border: none; font-size: 16px; }
 
   /* MOBILE DRAWER SYSTEM */
-  @media (max-width: 1100px) {
+  @media (max-width: 1000px) {
     #nav-toggle { display: block !important; }
     #nav-links { 
         display: block !important; 
         position: fixed; 
         top: 0; 
-        right: -300px; /* Hidden off-screen */
-        width: 280px; 
+        right: -310px; 
+        width: 300px; 
         height: 100vh; 
-        background: #f8fafc !important; 
-        transition: 0.3s; 
-        padding: 60px 0 20px 0;
-        box-shadow: -5px 0 15px rgba(0,0,0,0.2);
+        background: white !important; 
+        transition: transform 0.3s ease-in-out; 
+        padding: 0;
+        box-shadow: -5px 0 25px rgba(0,0,0,0.4);
         overflow-y: auto;
     }
-    #nav-links.active { right: 0; } /* Slides in */
+    #nav-links.active { transform: translateX(-310px); }
+    #nav-close { display: block; }
     
-    .nav-item { display: block; height: auto; border-bottom: 1px solid #e2e8f0; }
+    .nav-item { display: block; height: auto; border-bottom: 1px solid #eee; }
     .nav-item a, .drop-btn { 
         color: #1e293b !important; 
         padding: 15px 20px; 
-        font-size: 13px; 
+        font-size: 14px; 
         width: 100%; 
-        background: #f1f5f9; 
-        justify-content: flex-start;
+        background: #f8fafc; 
+        justify-content: space-between;
         height: auto;
     }
-    
-    .dropdown-content { 
-        display: block !important; 
-        position: static; 
-        background: white; 
-        box-shadow: none; 
-        border: none;
-    }
-    .dropdown-content a { 
-        padding: 12px 20px 12px 40px !important; 
-        color: #475569 !important; 
-        background: white !important;
-        border-bottom: 1px solid #f1f5f9;
-    }
+    .dropdown-content { display: block !important; position: static; background: white; box-shadow: none; border: none; }
+    .dropdown-content a { padding: 12px 20px 12px 40px !important; color: #64748b !important; background: white !important; border-bottom: 1px solid #f1f5f9; }
   }
 </style>`;
 
@@ -74,7 +70,8 @@ const renderNav = () => {
         return domains.some(d => u.includes(d)) ? u + sep + 'user=' + user : u;
     };
 
-    let html = `<div class="nav-item"><a href="${fix('https://loren-6q.github.io/WETNav/')}" data-type="ignore">Home</a></div>`;
+    let html = `<button id="nav-close">✕ CLOSE MENU</button>`;
+    html += `<div class="nav-item"><a href="${fix('https://loren-6q.github.io/WETNav/')}" data-type="ignore">Home</a></div>`;
 
     // 1. ACCOUNTING
     if (user === 'BOSS') {
@@ -133,7 +130,8 @@ const renderNav = () => {
     document.body.prepend(bar);
     document.body.style.paddingTop = "40px";
     
-    const btn = document.getElementById('nav-toggle');
-    if (btn) btn.onclick = () => document.getElementById('nav-links').classList.toggle('active');
+    const menu = document.getElementById('nav-links');
+    document.getElementById('nav-toggle').onclick = () => menu.classList.add('active');
+    document.getElementById('nav-close').onclick = () => menu.classList.remove('active');
 };
 renderNav();
