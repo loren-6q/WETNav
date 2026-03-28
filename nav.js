@@ -10,7 +10,7 @@ const navStyle = `<style>
   .nav-logo { display: flex; align-items: center; gap: 6px; text-decoration: none; color: white !important; font-weight: 700; font-size: 14px; white-space: nowrap; }
   .nav-logo img { height: 22px; width: auto; border-radius: 3px; }
   
-  /* DESKTOP LINKS - MAX EFFICIENCY */
+  /* DESKTOP LINKS */
   #nav-links { display: flex; gap: 0; align-items: center; height: 100%; }
   .nav-item { position: relative; height: 100%; display: flex; align-items: center; }
   .nav-item a, .drop-btn { color: white !important; text-decoration: none; font-size: 10.5px; font-weight: 600; padding: 0 6px; cursor: pointer; border: none; background: none; display: flex; align-items: center; height: 100%; text-transform: uppercase; transition: 0.2s; white-space: nowrap; }
@@ -26,7 +26,7 @@ const navStyle = `<style>
   #nav-toggle { display: none; color: black; background: gold; border: none; padding: 4px 8px; border-radius: 4px; font-weight: 700; font-size: 10px; cursor: pointer; font-family: 'Archivo Narrow', sans-serif; }
   #nav-close { display: none; width: 100%; text-align: right; padding: 12px 20px; box-sizing: border-box; background: #f1f5f9; color: #475569; font-weight: 700; cursor: pointer; border: none; font-size: 14px; border-bottom: 1px solid #e2e8f0; }
 
-  /* NEW 700PX BREAKPOINT - SAVES 300PX OF SPACE */
+  /* 700PX BREAKPOINT */
   @media (max-width: 700px) {
     #nav-toggle { display: block !important; }
     #nav-links { 
@@ -98,9 +98,10 @@ const renderNav = () => {
         html += `<div class="nav-item"><span class="drop-btn">Booking ▾</span><div class="dropdown-content">${items}</div></div>`;
     }
 
-    // 4. QUOTES
-    if (['BOSS', 'REC'].includes(user)) {
-        let items = `<a href="https://inbox.myallocator.com/booknow/-sxO1cCV5jLMwqZTXY629A" target="_blank" data-type="quotes" data-icon="🏨" data-desc="Direct rates.">WET Booking Engine</a>` +
+    // 4. PRICE QUOTES
+    if (['BOSS', 'REC', 'OA'].includes(user)) {
+        let items = `<a href="${fix('https://loren-6q.github.io/WETPricer/')}" data-type="quotes" data-icon="🏷️" data-desc="Quickly quote and compare prices.">WET Pricer</a>` +
+                    `<a href="https://inbox.myallocator.com/booknow/-sxO1cCV5jLMwqZTXY629A" target="_blank" data-type="quotes" data-icon="🏨" data-desc="Direct rates.">WET Booking Engine</a>` + 
                     `<a href="https://www.booking.com/searchresults.en-gb.html?dest_id=900050772&dest_type=city" target="_blank" data-type="quotes" data-icon="🔵" data-desc="Booking .com search.">B.com Search</a>` +
                     `<a href="https://www.hostelworld.com/pwa/s?q=Koh%20Phangan" target="_blank" data-type="quotes" data-icon="🟠" data-desc="Hostelworld search.">HW Search</a>` +
                     `<a href="https://www.booking.com/hotel/th/wet-pool-party-haad-rin.html" target="_blank" data-type="quotes" data-icon="🔗" data-desc="Direct link to WET on Booking .com.">WET on B.com</a>` +
