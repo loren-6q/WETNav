@@ -1,4 +1,4 @@
-/* Import Condensed Font */
+/* Font Import */
 const fontLink = document.createElement('link');
 fontLink.rel = 'stylesheet';
 fontLink.href = 'https://fonts.googleapis.com/css2?family=Archivo+Narrow:wght@600;700&display=swap';
@@ -46,55 +46,56 @@ const renderNav = () => {
 
     // 1. ACCOUNTING
     if (user === 'BOSS') {
-        let items = `<a href="#" data-type="accounting" data-icon="🏦" data-desc="WET overall accounting. (coming soon)">Accounting</a>` +
+        let items = `<a href="#" data-type="accounting" data-icon="🏦" data-desc="WET overall accounting.">Accounting</a>` +
                     `<a href="${fix('https://wetsalaries.netlify.app/')}" data-type="accounting" data-icon="💰" data-desc="Staff payroll.">Salaries</a>`;
         html += `<div class="nav-item"><span class="drop-btn">Acct ▾</span><div class="dropdown-content">${items}</div></div>`;
     }
 
     // 2. ADMIN
-    if (user === 'BOSS') { // BOSS ONLY per your list (3,4,5 weren't in REC/OA/BAR)
-        let items = `<a href="https://inbox.myallocator.com/en/availability/58137" target="_blank" data-type="admin" data-icon="🔑" data-desc="Channel manager.">MyAllocator</a>` +
-                    `<a href="https://account.booking.com/sign-in" target="_blank" data-type="admin" data-icon="🛂" data-desc="Booking .com Extranet.">B.com Login</a>` +
-                    `<a href="https://inbox.hostelworld.com/" target="_blank" data-type="admin" data-icon="🛂" data-desc="Hostelworld Extranet.">HW Login</a>`;
+    if (user === 'BOSS' || user === 'REC') {
+        let items = `<a href="https://inbox.myallocator.com/en/availability/58137" target="_blank" data-type="admin" data-icon="🌐" data-desc="Channel manager.">MyAllocator</a>` +
+                    `<a href="https://account.booking.com/sign-in" target="_blank" data-type="admin" data-icon="🛂" data-desc="B.com Extranet.">B.com Login</a>` +
+                    `<a href="https://inbox.hostelworld.com/" target="_blank" data-type="admin" data-icon="🛂" data-desc="HW Extranet.">HW Login</a>`;
         html += `<div class="nav-item"><span class="drop-btn">Admin ▾</span><div class="dropdown-content">${items}</div></div>`;
     }
 
     // 3. BOOKING
     if (['BOSS', 'REC', 'OA'].includes(user)) {
-        let items = `<a href="https://sg.loventis.net/Reception" target="_blank" data-type="booking" data-icon="🏩" data-desc="Reservation management.">Loventis (PMS)</a>` +
-                    `<a href="https://docs.google.com/spreadsheets/d/1UqivgGUjV0JAO2vB4QFjdw0c62pSsdlMsna-z4xE_SQ/edit?usp=sharing" target="_blank" data-type="booking" data-icon="💸" data-desc="Are Hostelworld bookings refundable?">Refundability</a>` +
-                    `<a href="${fix('https://loren-6q.github.io/WETParser/')}" data-type="booking" data-icon="📑" data-desc="Clean AirBnB, Booking .com and CC data.">Parser</a>`;
-        if (['BOSS', 'OA'].includes(user)) items += `<a href="${fix('https://loren-6q.github.io/WETReviews/')}" data-type="booking" data-icon="⭐" data-desc="Monitor and respond to guest reviews.">WET Reviews</a>`;
+        let items = `<a href="https://sg.loventis.net/Reception" target="_blank" data-type="booking" data-icon="🏩" data-desc="Loventis (PMS)">Loventis (PMS)</a>` +
+                    `<a href="https://docs.google.com/spreadsheets/d/1UqivgGUjV0JAO2vB4QFjdw0c62pSsdlMsna-z4xE_SQ/edit?usp=sharing" target="_blank" data-type="booking" data-icon="💸" data-desc="Refund tracking.">Refundability</a>` +
+                    `<a href="${fix('https://loren-6q.github.io/WETParser/')}" data-type="booking" data-icon="📑" data-desc="Clean data.">Parser</a>`;
+        if (['BOSS', 'OA'].includes(user)) items += `<a href="${fix('https://loren-6q.github.io/WETReviews/')}" data-type="booking" data-icon="⭐" data-desc="Guest feedback.">WET Reviews</a>`;
         html += `<div class="nav-item"><span class="drop-btn">Booking ▾</span><div class="dropdown-content">${items}</div></div>`;
     }
 
     // 4. PRICE QUOTES
     if (['BOSS', 'REC', 'OA', 'BAR'].includes(user)) {
         let items = "";
-        if (['BOSS', 'REC', 'OA'].includes(user)) items += `<a href="${fix('https://loren-6q.github.io/WETPricer/')}" data-type="quotes" data-icon="🏷️" data-desc="Quickly quote and compare prices.">WET Pricer</a>`;
-        if (['BOSS', 'REC', 'OA', 'BAR'].includes(user)) items += `<a href="https://inbox.myallocator.com/booknow/-sxO1cCV5jLMwqZTXY629A" target="_blank" data-type="quotes" data-icon="🏨" data-desc="Direct rates.">WET Booking Engine</a>`;
+        if (['BOSS', 'REC', 'OA'].includes(user)) items += `<a href="${fix('https://loren-6q.github.io/WETPricer/')}" data-type="quotes" data-icon="🏷️" data-desc="Quote & compare.">WET Pricer</a>`;
+        items += `<a href="https://inbox.myallocator.com/booknow/-sxO1cCV5jLMwqZTXY629A" target="_blank" data-type="quotes" data-icon="🏨" data-desc="Direct rates.">WET Booking Engine</a>`;
         if (['BOSS', 'REC', 'OA'].includes(user)) {
-            items += `<a href="https://www.booking.com/searchresults.en-gb.html?dest_id=900050772&dest_type=city" target="_blank" data-type="quotes" data-icon="🔵" data-desc="Booking .com search.">B.com Search</a>` +
-                     `<a href="https://www.hostelworld.com/pwa/s?q=Koh%20Phangan" target="_blank" data-type="quotes" data-icon="🟠" data-desc="Hostelworld search.">HW Search</a>` +
-                     `<a href="https://www.booking.com/hotel/th/wet-pool-party-haad-rin.html" target="_blank" data-type="quotes" data-icon="🔗" data-desc="Direct link to WET on Booking .com.">WET on B.com</a>` +
-                     `<a href="https://www.hostelworld.com/pwa/hosteldetails.php/WET-a-Pool-Party-Hostel-by-Wild-Wandering/Koh-Phangan/313418" target="_blank" data-type="quotes" data-icon="🔗" data-desc="Direct link to WET on Hostelworld.">WET on HW</a>`;
+            items += `<a href="https://www.booking.com/searchresults.en-gb.html?dest_id=900050772" target="_blank" data-type="quotes" data-icon="🔵" data-desc="B.com search.">B.com Search</a>` +
+                     `<a href="https://www.hostelworld.com/pwa/s?q=Koh%20Phangan" target="_blank" data-type="quotes" data-icon="🟠" data-desc="HW search.">HW Search</a>` +
+                     `<a href="https://www.booking.com/hotel/th/wet-pool-party-haad-rin.html" target="_blank" data-type="quotes" data-icon="🔗" data-desc="WET on B.com.">WET on B.com</a>` +
+                     `<a href="https://www.hostelworld.com/pwa/hosteldetails.php/WET-a-Pool-Party-Hostel-by-Wild-Wandering/Koh-Phangan/313418" target="_blank" data-type="quotes" data-icon="🔗" data-desc="WET on HW.">WET on HW</a>`;
         }
         html += `<div class="nav-item"><span class="drop-btn">Quotes ▾</span><div class="dropdown-content">${items}</div></div>`;
     }
 
     // 5. STAFFING
     if (['BOSS', 'REC', 'OA'].includes(user)) {
-        let items = `<a href="${fix('https://loren-6q.github.io/WETvCal/')}" data-type="staffing" data-icon="🗓️" data-desc="Calendar for stay dates of temp workers.">V Cal</a>` +
-                    `<a href="${fix('https://staff-scheduler.onrender.com/')}" target="_blank" data-type="staffing" data-icon="📅" data-desc="Schedule part-time staff.">Scheduler</a>`;
+        let items = `<a href="${fix('https://loren-6q.github.io/WETvCal/')}" data-type="staffing" data-icon="🗓️" data-desc="Temp workers.">V Cal</a>` +
+                    `<a href="${fix('https://staff-scheduler.onrender.com/')}" target="_blank" data-type="staffing" data-icon="📅" data-desc="Scheduler.">Scheduler</a>`;
         html += `<div class="nav-item"><span class="drop-btn">Staffing ▾</span><div class="dropdown-content">${items}</div></div>`;
     }
 
-    // 6. OPERATIONS
-    if (['BOSS', 'BAR', 'REC', 'OA'].includes(user)) {
+    // 6. OPS
+    if (['BOSS', 'BAR', 'REC', 'OA', 'HK'].includes(user)) {
         let items = "";
-        if (['BOSS', 'REC', 'BAR'].includes(user)) items += `<a href="#" data-type="ops" data-icon="💳" data-desc="Point of sale (coming soon)">POS</a>`;
-        if (['BOSS', 'REC', 'BAR', 'OA'].includes(user)) items += `<a href="${fix('https://bar-stock-nine.vercel.app/')}" data-type="ops" data-icon="🍺" data-desc="Bar & Hostel stock check.">Stock</a>`;
+        if (['BOSS', 'REC', 'BAR'].includes(user)) items += `<a href="#" data-type="ops" data-icon="💳" data-desc="Point of sale.">POS</a>`;
+        if (['BOSS', 'REC', 'BAR', 'OA'].includes(user)) items += `<a href="${fix('https://bar-stock-nine.vercel.app/')}" data-type="ops" data-icon="🍺" data-desc="Stock check.">Stock</a>`;
         if (['BOSS', 'OA'].includes(user)) items += `<a href="${fix('https://loren-6q.github.io/Full-Moon-Week-Schedule/')}" data-type="ops" data-icon="🌕" data-desc="Instagram tool.">FMW</a>`;
+        if (['BOSS', 'REC', 'HK'].includes(user)) items += `<a href="${fix('https://loren-6q.github.io/WETDoors/')}" data-type="ops" data-icon="🔒" data-desc="Room access control.">Doors</a>`;
         html += `<div class="nav-item"><span class="drop-btn">Ops ▾</span><div class="dropdown-content">${items}</div></div>`;
     }
 
