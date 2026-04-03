@@ -46,8 +46,8 @@ const renderNav = () => {
 
     // 1. ACCOUNTING
     if (user === 'BOSS') {
-        let items = `<a href="#" data-type="accounting" data-icon="🏦" data-desc="WET overall accounting.">Accounting</a>` +
-                    `<a href="${fix('https://wetsalaries.netlify.app/')}" data-type="accounting" data-icon="💰" data-desc="Staff payroll.">Salaries</a>`;
+        let items = `<a href="#" data-type="accounting" data-icon="🏦" data-desc="Accounting.">Accounting</a>` +
+                    `<a href="${fix('https://loren-6q.github.io/WETSalaries/')}" data-type="accounting" data-icon="💰" data-desc="Staff payroll.">Salaries</a>`;
         html += `<div class="nav-item"><span class="drop-btn">Acct ▾</span><div class="dropdown-content">${items}</div></div>`;
     }
 
@@ -63,7 +63,7 @@ const renderNav = () => {
     if (['BOSS', 'REC', 'OA'].includes(user)) {
         let items = `<a href="https://sg.loventis.net/Reception" target="_blank" data-type="booking" data-icon="🏩" data-desc="Loventis (PMS)">Loventis (PMS)</a>` +
                     `<a href="https://docs.google.com/spreadsheets/d/1UqivgGUjV0JAO2vB4QFjdw0c62pSsdlMsna-z4xE_SQ/edit?usp=sharing" target="_blank" data-type="booking" data-icon="💸" data-desc="Refund tracking.">Refundability</a>` +
-                    `<a href="${fix('https://loren-6q.github.io/WETParser/')}" data-type="booking" data-icon="📑" data-desc="Clean data.">Parser</a>`;
+                    `<a href="${fix('https://loren-6q.github.io/WETParser/')}" data-type="booking" data-icon="📑" data-desc="Data cleaning.">Parser</a>`;
         if (['BOSS', 'OA'].includes(user)) items += `<a href="${fix('https://loren-6q.github.io/WETReviews/')}" data-type="booking" data-icon="⭐" data-desc="Guest feedback.">WET Reviews</a>`;
         html += `<div class="nav-item"><span class="drop-btn">Booking ▾</span><div class="dropdown-content">${items}</div></div>`;
     }
@@ -71,7 +71,7 @@ const renderNav = () => {
     // 4. PRICE QUOTES
     if (['BOSS', 'REC', 'OA', 'BAR'].includes(user)) {
         let items = "";
-        if (['BOSS', 'REC', 'OA'].includes(user)) items += `<a href="${fix('https://loren-6q.github.io/WETPricer/')}" data-type="quotes" data-icon="🏷️" data-desc="Quote & compare.">WET Pricer</a>`;
+        if (['BOSS', 'REC', 'OA'].includes(user)) items += `<a href="${fix('https://loren-6q.github.io/WETPricer/')}" data-type="quotes" data-icon="🏷️" data-desc="Quote tool.">WET Pricer</a>`;
         items += `<a href="https://inbox.myallocator.com/booknow/-sxO1cCV5jLMwqZTXY629A" target="_blank" data-type="quotes" data-icon="🏨" data-desc="Direct rates.">WET Booking Engine</a>`;
         if (['BOSS', 'REC', 'OA'].includes(user)) {
             items += `<a href="https://www.booking.com/searchresults.en-gb.html?dest_id=900050772" target="_blank" data-type="quotes" data-icon="🔵" data-desc="B.com search.">B.com Search</a>` +
@@ -84,7 +84,7 @@ const renderNav = () => {
 
     // 5. STAFFING
     if (['BOSS', 'REC', 'OA'].includes(user)) {
-        let items = `<a href="${fix('https://loren-6q.github.io/WETvCal/')}" data-type="staffing" data-icon="🗓️" data-desc="Temp workers.">V Cal</a>` +
+        let items = `<a href="${fix('https://loren-6q.github.io/WETvCal/')}" data-type="staffing" data-icon="🗓️" data-desc="Temp staff.">V Cal</a>` +
                     `<a href="${fix('https://staff-scheduler.onrender.com/')}" target="_blank" data-type="staffing" data-icon="📅" data-desc="Scheduler.">Scheduler</a>`;
         html += `<div class="nav-item"><span class="drop-btn">Staffing ▾</span><div class="dropdown-content">${items}</div></div>`;
     }
@@ -95,7 +95,7 @@ const renderNav = () => {
         if (['BOSS', 'REC', 'BAR'].includes(user)) items += `<a href="#" data-type="ops" data-icon="💳" data-desc="Point of sale.">POS</a>`;
         if (['BOSS', 'REC', 'BAR', 'OA'].includes(user)) items += `<a href="${fix('https://bar-stock-nine.vercel.app/')}" data-type="ops" data-icon="🍺" data-desc="Stock check.">Stock</a>`;
         if (['BOSS', 'OA'].includes(user)) items += `<a href="${fix('https://loren-6q.github.io/Full-Moon-Week-Schedule/')}" data-type="ops" data-icon="🌕" data-desc="Instagram tool.">FMW</a>`;
-        if (['BOSS', 'REC', 'HK'].includes(user)) items += `<a href="${fix('https://loren-6q.github.io/WETDoors/')}" data-type="ops" data-icon="🔒" data-desc="Room access control.">Doors</a>`;
+        if (['BOSS', 'REC', 'HK'].includes(user)) items += `<a href="${fix('https://loren-6q.github.io/WETDoors/')}" data-type="ops" data-icon="🔒" data-desc="Access control.">Doors</a>`;
         html += `<div class="nav-item"><span class="drop-btn">Ops ▾</span><div class="dropdown-content">${items}</div></div>`;
     }
 
