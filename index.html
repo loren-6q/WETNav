@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WET Business Hub</title>
     <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/loren-6q/WETNav/main/favicon.png">
     <style>
@@ -20,14 +21,14 @@
         .card { background: var(--card); border: 1px solid var(--border); padding: 24px; border-radius: 12px; text-decoration: none; color: white; transition: 0.2s; display: flex; flex-direction: column; overflow: hidden; }
         .card:hover { border-color: gold; transform: translateY(-4px); }
         .card.accounting { border-top: 4px solid var(--col-acct); } .card.admin { border-top: 4px solid var(--col-admin); } .card.booking { border-top: 4px solid var(--col-book); } .card.staffing { border-top: 4px solid var(--col-staff); } .card.quotes { border-top: 4px solid var(--col-quote); } .card.ops { border-top: 4px solid var(--col-ops); }
-        .card .emoji { font-size: 24px; margin-bottom: 8px; } .card .title { font-weight: 800; font-size: 17px; } .card .desc { font-size: 12px; color: #94a3b8; margin-top: 6px; }
+        .card .emoji { font-size: 24px; margin-bottom: 8px; } .card .title { font-weight: 800; font-size: 17px; } .card .desc { font-size: 12px; color: #94a3b8; margin-top: 6px; line-height: 1.4; }
         .hidden { display: none !important; }
     </style>
 </head>
 <body>
     <div class="hub-container">
-        <header><div><h1>WET BUSINESS HUB</h1><p id="role-tag">WORKSPACE ACTIVE</p></div><a href="manual.html" class="manual-link">📖</a></header>
-        <div class="search-container"><input type="text" id="hubSearch" placeholder="Search apps..." onkeyup="filterHub()"></div>
+        <header><div><h1>WET BUSINESS HUB</h1><p id="role-tag">WORKSPACE ACTIVE</p></div><a id="manual-btn" href="#" class="manual-link">📖</a></header>
+        <div class="search-container"><input type="text" id="hubSearch" placeholder="Search apps by name or description..." onkeyup="filterHub()"></div>
         <section id="sec-accounting" class="hidden"><h2>Accounting</h2><div id="grid-accounting" class="grid"></div></section>
         <section id="sec-admin" class="hidden"><h2>Administration</h2><div id="grid-admin" class="grid"></div></section>
         <section id="sec-booking" class="hidden"><h2>Booking & Reservations</h2><div id="grid-booking" class="grid"></div></section>
@@ -40,19 +41,53 @@
     <script>
         const buildDashboard = () => {
             const navLinks = document.querySelectorAll('#global-nav a'); if (navLinks.length === 0) return false;
-            const groups = { accounting: { grid: document.getElementById('grid-accounting'), sec: document.getElementById('sec-accounting'), count: 0 }, admin: { grid: document.getElementById('grid-admin'), sec: document.getElementById('sec-admin'), count: 0 }, booking: { grid: document.getElementById('grid-booking'), sec: document.getElementById('sec-booking'), count: 0 }, staffing: { grid: document.getElementById('grid-staffing'), sec: document.getElementById('sec-staffing'), count: 0 }, quotes: { grid: document.getElementById('grid-quotes'), sec: document.getElementById('sec-quotes'), count: 0 }, ops: { grid: document.getElementById('grid-ops'), sec: document.getElementById('sec-ops'), count: 0 } };
+            const user = new URLSearchParams(window.location.search).get('user') || 'Staff';
+            document.getElementById('manual-btn').href = `manual.html?user=${user}`;
+            
+            const groups = { 
+                accounting: { grid: document.getElementById('grid-accounting'), sec: document.getElementById('sec-accounting'), count: 0 }, 
+                admin: { grid: document.getElementById('grid-admin'), sec: document.getElementById('sec-admin'), count: 0 }, 
+                booking: { grid: document.getElementById('grid-booking'), sec: document.getElementById('sec-booking'), count: 0 }, 
+                staffing: { grid: document.getElementById('grid-staffing'), sec: document.getElementById('sec-staffing'), count: 0 }, 
+                quotes: { grid: document.getElementById('grid-quotes'), sec: document.getElementById('sec-quotes'), count: 0 }, 
+                ops: { grid: document.getElementById('grid-ops'), sec: document.getElementById('sec-ops'), count: 0 } 
+            };
+            
             Object.values(groups).forEach(g => { g.grid.innerHTML = ''; g.sec.classList.add('hidden'); });
+            
             navLinks.forEach(link => {
                 const type = link.getAttribute('data-type'); if (!type || !groups[type]) return;
-                const card = document.createElement('a'); card.className = `card ${type}`; card.href = link.href; if (link.target === '_blank') card.target = '_blank';
-                card.innerHTML = `<span class="emoji">${link.getAttribute('data-icon') || '🔗'}</span><span class="title">${link.innerText}</span><span class="desc">${link.getAttribute('data-desc') || ''}</span>`;
+                
+                // RESTORED: This line pulls the short description directly from nav.js
+                const shortDesc = link.getAttribute('data-desc') || '';
+                
+                const card = document.createElement('a'); 
+                card.className = `card ${type}`; 
+                card.href = link.href; 
+                if (link.target === '_blank') card.target = '_blank';
+                
+                card.innerHTML = `
+                    <span class="emoji">${link.getAttribute('data-icon') || '🔗'}</span>
+                    <span class="title">${link.innerText}</span>
+                    <span class="desc">${shortDesc}</span>
+                `;
+                
                 groups[type].grid.appendChild(card); groups[type].count++;
             });
+            
             Object.values(groups).forEach(g => { if (g.count > 0) g.sec.classList.remove('hidden'); });
-            document.getElementById('status-msg').classList.add('hidden'); return true;
+            document.getElementById('status-msg').classList.add('hidden'); 
+            return true;
         };
-        function filterHub() { const query = document.getElementById('hubSearch').value.toLowerCase(); document.querySelectorAll('.card').forEach(card => card.style.display = card.innerText.toLowerCase().includes(query) ? 'flex' : 'none'); document.querySelectorAll('section').forEach(sec => sec.style.display = sec.querySelectorAll('.card[style="display: flex;"]').length > 0 ? 'block' : 'none'); }
-        const observer = new MutationObserver(() => { if (buildDashboard()) observer.disconnect(); }); observer.observe(document.body, { childList: true, subtree: true });
+
+        function filterHub() { 
+            const query = document.getElementById('hubSearch').value.toLowerCase(); 
+            document.querySelectorAll('.card').forEach(card => card.style.display = card.innerText.toLowerCase().includes(query) ? 'flex' : 'none'); 
+            document.querySelectorAll('section').forEach(sec => sec.style.display = sec.querySelectorAll('.card[style="display: flex;"]').length > 0 ? 'block' : 'none'); 
+        }
+        
+        const observer = new MutationObserver(() => { if (buildDashboard()) observer.disconnect(); }); 
+        observer.observe(document.body, { childList: true, subtree: true });
     </script>
 </body>
 </html>
