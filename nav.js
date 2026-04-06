@@ -46,12 +46,12 @@ const renderNav = () => {
 
     // 1. ACCOUNTING
     if (user === 'BOSS') {
-        let items = `<a href="#" data-type="accounting" data-icon="🏦" data-desc="Accounting.">Accounting</a>` +
+        let items = `<a href="#" data-type="accounting" data-icon="🏦" data-desc="Overall accounting.">Accounting</a>` +
                     `<a href="${fix('https://loren-6q.github.io/WETSalaries/')}" data-type="accounting" data-icon="💰" data-desc="Staff payroll.">Salaries</a>`;
         html += `<div class="nav-item"><span class="drop-btn">Acct ▾</span><div class="dropdown-content">${items}</div></div>`;
     }
 
-    // 2. ADMIN (LOCKED TO BOSS ONLY)
+    // 2. ADMIN
     if (user === 'BOSS') {
         let items = `<a href="https://inbox.myallocator.com/en/availability/58137" target="_blank" data-type="admin" data-icon="🌐" data-desc="Channel manager.">MyAllocator</a>` +
                     `<a href="https://account.booking.com/sign-in" target="_blank" data-type="admin" data-icon="🛂" data-desc="B.com Extranet.">B.com Login</a>` +
@@ -61,9 +61,9 @@ const renderNav = () => {
 
     // 3. BOOKING
     if (['BOSS', 'REC', 'OA'].includes(user)) {
-        let items = `<a href="https://sg.loventis.net/Reception" target="_blank" data-type="booking" data-icon="🏩" data-desc="Loventis (PMS)">Loventis (PMS)</a>` +
+        let items = `<a href="https://sg.loventis.net/Reception" target="_blank" data-type="booking" data-icon="🏩" data-desc="Reservation management.">Loventis (PMS)</a>` +
                     `<a href="https://docs.google.com/spreadsheets/d/1UqivgGUjV0JAO2vB4QFjdw0c62pSsdlMsna-z4xE_SQ/edit?usp=sharing" target="_blank" data-type="booking" data-icon="💸" data-desc="Refund tracking.">Refundability</a>` +
-                    `<a href="${fix('https://loren-6q.github.io/WETParser/')}" data-type="booking" data-icon="📑" data-desc="Data cleaning.">Parser</a>`;
+                    `<a href="${fix('https://loren-6q.github.io/WETParser/')}" data-type="booking" data-icon="📑" data-desc="Clean data.">Parser</a>`;
         if (['BOSS', 'OA'].includes(user)) items += `<a href="${fix('https://loren-6q.github.io/WETReviews/')}" data-type="booking" data-icon="⭐" data-desc="Guest feedback.">WET Reviews</a>`;
         html += `<div class="nav-item"><span class="drop-btn">Booking ▾</span><div class="dropdown-content">${items}</div></div>`;
     }
@@ -71,7 +71,7 @@ const renderNav = () => {
     // 4. PRICE QUOTES
     if (['BOSS', 'REC', 'OA', 'BAR'].includes(user)) {
         let items = "";
-        if (['BOSS', 'REC', 'OA'].includes(user)) items += `<a href="${fix('https://loren-6q.github.io/WETPricer/')}" data-type="quotes" data-icon="🏷️" data-desc="Quote tool.">WET Pricer</a>`;
+        if (['BOSS', 'REC', 'OA'].includes(user)) items += `<a href="${fix('https://loren-6q.github.io/WETPricer/')}" data-type="quotes" data-icon="🏷️" data-desc="Quote & compare.">WET Pricer</a>`;
         items += `<a href="https://inbox.myallocator.com/booknow/-sxO1cCV5jLMwqZTXY629A" target="_blank" data-type="quotes" data-icon="🏨" data-desc="Direct rates.">WET Booking Engine</a>`;
         if (['BOSS', 'REC', 'OA'].includes(user)) {
             items += `<a href="https://www.booking.com/searchresults.en-gb.html?dest_id=900050772" target="_blank" data-type="quotes" data-icon="🔵" data-desc="B.com search.">B.com Search</a>` +
@@ -98,6 +98,9 @@ const renderNav = () => {
         if (['BOSS', 'REC', 'HK'].includes(user)) items += `<a href="${fix('https://loren-6q.github.io/WETDoors/')}" data-type="ops" data-icon="🔒" data-desc="Access control.">Doors</a>`;
         html += `<div class="nav-item"><span class="drop-btn">Ops ▾</span><div class="dropdown-content">${items}</div></div>`;
     }
+
+    // MANUAL LINK (Accessible to all)
+    html += `<div class="nav-item"><a href="${fix('https://loren-6q.github.io/WETNav/manual.html')}">Manual</a></div>`;
 
     const bar = document.createElement('nav');
     bar.id = 'global-nav';
