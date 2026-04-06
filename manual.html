@@ -1,125 +1,71 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WET Hub Manual</title>
     <style>
-        :root { --blue: #37b5ff; --bg: #0f172a; --card: #1e293b; --text: #f1f5f9; }
-        body { background: var(--bg); color: var(--text); font-family: system-ui, sans-serif; margin: 0; padding: 60px 20px 100px; }
-        .container { max-width: 800px; margin: 0 auto; }
-        header { border-bottom: 2px solid var(--blue); padding-bottom: 20px; margin-bottom: 40px; }
+        :root { --blue: #37b5ff; --bg: #0f172a; --card: #1e293b; --text: #f1f5f9; --border: #334155; }
+        body { background: var(--bg); color: var(--text); font-family: system-ui, sans-serif; margin: 0; padding: 60px 20px 100px; line-height: 1.5; }
+        .container { max-width: 900px; margin: 0 auto; }
+        header { border-left: 4px solid gold; padding-left: 20px; margin-bottom: 40px; }
         header h1 { margin: 0; font-size: 32px; font-weight: 900; }
-        header p { color: #64748b; margin: 5px 0 0; }
-        
-        .search-box { width: 100%; padding: 15px; background: var(--card); border: 1px solid #334155; border-radius: 8px; color: white; font-size: 16px; margin-bottom: 30px; }
-        
-        .manual-section { margin-bottom: 50px; }
-        .manual-section h2 { font-size: 14px; text-transform: uppercase; letter-spacing: 2px; color: var(--blue); border-bottom: 1px solid #334155; padding-bottom: 10px; }
-        
-        .app-entry { background: var(--card); border-radius: 12px; padding: 20px; margin-bottom: 15px; border-left: 4px solid #334155; transition: 0.2s; }
-        .app-entry:hover { border-left-color: var(--blue); transform: translateX(5px); }
-        .app-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
-        .app-icon { font-size: 24px; }
-        .app-title { font-size: 20px; font-weight: 800; }
-        .app-desc { color: #94a3b8; font-style: italic; margin-bottom: 15px; font-size: 14px; }
-        
-        .instructions { background: rgba(0,0,0,0.2); padding: 15px; border-radius: 6px; font-size: 14px; line-height: 1.6; border: 1px dashed #334155; }
-        .instructions b { color: var(--blue); }
-        
-        .hidden { display: none; }
+        .search-box { width: 100%; padding: 16px; background: var(--card); border: 1px solid var(--border); border-radius: 12px; color: white; margin-bottom: 30px; outline: none; }
+        .manual-section { margin-bottom: 60px; }
+        .manual-section h2 { font-size: 13px; text-transform: uppercase; letter-spacing: 3px; color: var(--blue); border-bottom: 1px solid var(--border); padding-bottom: 12px; margin-bottom: 25px; }
+        .app-entry { background: var(--card); border-radius: 14px; padding: 25px; margin-bottom: 20px; border: 1px solid var(--border); }
+        .app-header { display: flex; align-items: center; gap: 12px; margin-bottom: 15px; }
+        .app-title { font-size: 22px; font-weight: 800; color: white; }
+        .instructions { background: rgba(15, 23, 42, 0.5); padding: 20px; border-radius: 10px; font-size: 15px; color: #cbd5e1; border: 1px solid rgba(255,255,255,0.05); }
+        .hidden { display: none !important; }
     </style>
 </head>
 <body>
     <div class="container">
-        <header>
-            <h1>COMPANY MANUAL</h1>
-            <p>Instructions and descriptions for all WET Hub tools.</p>
-        </header>
-
-        <input type="text" id="manualSearch" class="search-box" placeholder="Search for a tool or keyword (e.g. 'payroll', 'booking')..." onkeyup="searchManual()">
-
-        <div id="manual-content">
-            </div>
+        <header><h1>COMPANY MANUAL</h1><p>Standard Operating Procedures</p></header>
+        <input type="text" id="manualSearch" class="search-box" placeholder="Search manual..." onkeyup="searchManual()">
+        <div id="manual-content"></div>
     </div>
-
     <script src="nav.js"></script>
     <script>
-        const buildManual = () => {
-            const navLinks = document.querySelectorAll('#global-nav a');
-            const content = document.getElementById('manual-content');
-            if (navLinks.length < 2) return false;
-
-            const categories = {
-                accounting: "Accounting & Finance",
-                admin: "Administration",
-                booking: "Booking & Reservations",
-                quotes: "Price Quotes & Comparisons",
-                staffing: "Staffing & HR",
-                ops: "Operations"
-            };
-
-            const sections = {};
-            Object.keys(categories).forEach(cat => {
-                const sec = document.createElement('div');
-                sec.className = 'manual-section';
-                sec.innerHTML = `<h2>${categories[cat]}</h2><div id="sec-${cat}"></div>`;
-                content.appendChild(sec);
-                sections[cat] = document.getElementById(`sec-${cat}`);
-            });
-
-            navLinks.forEach(link => {
-                const type = link.getAttribute('data-type');
-                if (!type || !sections[type]) return;
-
-                const name = link.innerText;
-                const icon = link.getAttribute('data-icon') || '🔗';
-                const desc = link.getAttribute('data-desc') || 'Company tool.';
-
-                const entry = document.createElement('div');
-                entry.className = 'app-entry';
-                entry.innerHTML = `
-                    <div class="app-header">
-                        <span class="app-icon">${icon}</span>
-                        <span class="app-title">${name}</span>
-                    </div>
-                    <div class="app-desc">${desc}</div>
-                    <div class="instructions">
-                        ${getInstructions(name)}
-                    </div>
-                `;
-                sections[type].appendChild(entry);
-            });
-            return true;
-        };
-
-        // BASIC TEMPLATE - You can expand these strings!
         function getInstructions(appName) {
             const docs = {
-                "Salaries": "Used by <b>BOSS only</b>. Enter staff hours here to calculate monthly payroll. Data is synced to the private secure sheet.",
-                "Loventis (PMS)": "Main reservation system. All check-ins and check-outs must be logged here immediately. <b>Reception:</b> Ensure guest contact details are complete.",
-                "WET Pricer": "Use this tool when a guest asks 'How much?'. It compares our direct rates against B.com to ensure we are always competitive.",
-                "Doors": "Room access control. Requires <b>BOSS, REC, or HK</b> level access. Select the room number and toggle the lock status.",
-                "Stock": "Log all inventory arrivals here. <b>BAR:</b> Perform counts every Sunday night.",
-                "Parser": "Upload raw CSV files from Booking.com or AirBnB here to clean the data for our internal records."
+                "Accounting": "Internal company ledger. Access restricted to authorized personnel.",
+                "Salaries": "Payroll Processing: Tool for calculating staff totals. Verify hours before finalizing.",
+                "MyAllocator": "Channel Manager: Controls inventory across platforms. Do not adjust without authorization.",
+                "B.com Login": "Booking.com Extranet for managing guest messages.",
+                "HW Login": "Hostelworld Extranet for disputes and communication.",
+                "Loventis": "PMS: Primary system. Process all guests immediately. ID scans required.",
+                "Refundability": "Policy Guide: Determines deposit eligibility based on cancellation window.",
+                "Parser": "Data Conversion: Cleans CSV exports for internal records.",
+                "WET Reviews": "Reputation Management: Daily monitoring of feedback required.",
+                "WET Pricer": "Walk-in Tool: Compare direct rates to OTA prices to ensure best direct price.",
+                "WET Booking Engine": "Public portal. Direct guests here for direct online bookings.",
+                "V Cal": "Personnel Calendar: Tracks stay dates for volunteers.",
+                "Scheduler": "Work Roster: Check every Sunday for shift updates.",
+                "POS": "Point of Sale for bar and shop transactions.",
+                "Stock": "Inventory: Log all supply deliveries. Weekly counts every Sunday.",
+                "FMW": "Event Tool: Social media scheduling for Full Moon peaks.",
+                "Doors": "Security: Remote access for room locks. Verify status after housekeeping."
             };
-            return docs[appName] || "Select the tool from the Hub to begin. For login issues, contact the system admin.";
+            return docs[appName] || "Authorized company tool. Contact admin for usage guidance.";
         }
-
-        function searchManual() {
-            let input = document.getElementById('manualSearch').value.toLowerCase();
-            let entries = document.getElementsByClassName('app-entry');
-            for (let i = 0; i < entries.length; i++) {
-                if (!entries[i].innerHTML.toLowerCase().includes(input)) {
-                    entries[i].classList.add('hidden');
-                } else {
-                    entries[i].classList.remove('hidden');
-                }
-            }
-        }
-
-        const observer = new MutationObserver(() => { if (buildManual()) observer.disconnect(); });
-        observer.observe(document.body, { childList: true, subtree: true });
+        const buildManual = () => {
+            const navLinks = document.querySelectorAll('#global-nav a'); const content = document.getElementById('manual-content');
+            if (navLinks.length < 2) return false;
+            const cats = { accounting: "Accounting", admin: "Administration", booking: "Booking", quotes: "Quotes", staffing: "Staffing", ops: "Operations" };
+            content.innerHTML = '';
+            Object.keys(cats).forEach(cat => { const sec = document.createElement('div'); sec.className = 'manual-section'; sec.id = `parent-${cat}`; sec.innerHTML = `<h2>${cats[cat]}</h2><div id="sec-${cat}"></div>`; content.appendChild(sec); });
+            navLinks.forEach(link => {
+                const type = link.getAttribute('data-type'); if (!type || !cats[type]) return;
+                const entry = document.createElement('div'); entry.className = 'app-entry';
+                entry.innerHTML = `<div class="app-header"><span class="app-icon">${link.getAttribute('data-icon') || '🔗'}</span><span class="app-title">${link.innerText}</span></div><div class="instructions">${getInstructions(link.innerText)}</div>`;
+                document.getElementById(`sec-${type}`).appendChild(entry);
+            });
+            Object.keys(cats).forEach(cat => { if (document.getElementById(`sec-${cat}`).children.length === 0) document.getElementById(`parent-${cat}`).remove(); });
+            return true;
+        };
+        function searchManual() { const q = document.getElementById('manualSearch').value.toLowerCase(); document.querySelectorAll('.app-entry').forEach(e => e.classList.toggle('hidden', !e.innerText.toLowerCase().includes(q))); document.querySelectorAll('.manual-section').forEach(s => s.classList.toggle('hidden', s.querySelectorAll('.app-entry:not(.hidden)').length === 0)); }
+        const observer = new MutationObserver(() => { if (buildManual()) observer.disconnect(); }); observer.observe(document.body, { childList: true, subtree: true });
     </script>
 </body>
 </html>
