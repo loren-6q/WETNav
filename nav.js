@@ -51,8 +51,8 @@ const renderNav = () => {
         html += `<div class="nav-item"><span class="drop-btn">Acct ▾</span><div class="dropdown-content">${items}</div></div>`;
     }
 
-    // 2. ADMIN
-    if (user === 'BOSS' || user === 'REC') {
+    // 2. ADMIN (LOCKED TO BOSS ONLY)
+    if (user === 'BOSS') {
         let items = `<a href="https://inbox.myallocator.com/en/availability/58137" target="_blank" data-type="admin" data-icon="🌐" data-desc="Channel manager.">MyAllocator</a>` +
                     `<a href="https://account.booking.com/sign-in" target="_blank" data-type="admin" data-icon="🛂" data-desc="B.com Extranet.">B.com Login</a>` +
                     `<a href="https://inbox.hostelworld.com/" target="_blank" data-type="admin" data-icon="🛂" data-desc="HW Extranet.">HW Login</a>`;
@@ -84,7 +84,7 @@ const renderNav = () => {
 
     // 5. STAFFING
     if (['BOSS', 'REC', 'OA'].includes(user)) {
-        let items = `<a href="${fix('https://loren-6q.github.io/WETvCal/')}" data-type="staffing" data-icon="🗓️" data-desc="Temp staff.">V Cal</a>` +
+        let items = `<a href="${fix('https://loren-6q.github.io/WETvCal/')}" data-type="staffing" data-icon="🗓️" data-desc="Temp workers.">V Cal</a>` +
                     `<a href="${fix('https://staff-scheduler.onrender.com/')}" target="_blank" data-type="staffing" data-icon="📅" data-desc="Scheduler.">Scheduler</a>`;
         html += `<div class="nav-item"><span class="drop-btn">Staffing ▾</span><div class="dropdown-content">${items}</div></div>`;
     }
