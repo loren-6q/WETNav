@@ -1,4 +1,4 @@
-/* Font Import */
+/* Font Import for Condensed Style */
 const fontLink = document.createElement('link');
 fontLink.rel = 'stylesheet';
 fontLink.href = 'https://fonts.googleapis.com/css2?family=Archivo+Narrow:wght@600;700&display=swap';
@@ -18,7 +18,6 @@ const navStyle = `<style>
   .nav-item:hover .dropdown-content { display: block; }
   #nav-toggle { display: none; color: black; background: gold; border: none; padding: 4px 8px; border-radius: 4px; font-weight: 700; font-size: 10px; cursor: pointer; font-family: 'Archivo Narrow', sans-serif; }
   #nav-close { display: none; width: 100%; text-align: right; padding: 12px 20px; box-sizing: border-box; background: #f1f5f9; color: #475569; font-weight: 700; cursor: pointer; border: none; font-size: 14px; border-bottom: 1px solid #e2e8f0; }
-
   @media (max-width: 700px) {
     #nav-toggle { display: block !important; }
     #nav-links { display: block !important; position: fixed; top: 0; right: -310px; width: 300px; height: 100vh; background: white !important; transition: transform 0.3s ease-in-out; padding: 0; box-shadow: -5px 0 25px rgba(0,0,0,0.4); overflow-y: auto; z-index: 1000001; }
@@ -40,74 +39,45 @@ const renderNav = () => {
         const domains = ['github.io', 'netlify.app', 'vercel.app', 'wildandwandering.com', 'wetpoolparty.com', 'onrender.com'];
         return domains.some(d => u.includes(d)) ? u + sep + 'user=' + user : u;
     };
-
     let html = `<button id="nav-close">✕ CLOSE MENU</button>`;
-    html += `<div class="nav-item"><a href="${fix('https://loren-6q.github.io/WETNav/')}" data-type="ignore">Home</a></div>`;
-
-    // 1. ACCOUNTING
+    html += `<div class="nav-item"><a href="${fix('https://loren-6q.github.io/WETNav/')}">Home</a></div>`;
     if (user === 'BOSS') {
-        let items = `<a href="#" data-type="accounting" data-icon="🏦" data-desc="Overall accounting.">Accounting</a>` +
-                    `<a href="${fix('https://loren-6q.github.io/WETSalaries/')}" data-type="accounting" data-icon="💰" data-desc="Staff payroll.">Salaries</a>`;
+        let items = `<a href="#" data-type="accounting" data-icon="🏦" data-desc="Ledger.">Accounting</a><a href="${fix('https://loren-6q.github.io/WETSalaries/')}" data-type="accounting" data-icon="💰" data-desc="Payroll.">Salaries</a>`;
         html += `<div class="nav-item"><span class="drop-btn">Acct ▾</span><div class="dropdown-content">${items}</div></div>`;
     }
-
-    // 2. ADMIN
     if (user === 'BOSS') {
-        let items = `<a href="https://inbox.myallocator.com/en/availability/58137" target="_blank" data-type="admin" data-icon="🌐" data-desc="Channel manager.">MyAllocator</a>` +
-                    `<a href="https://account.booking.com/sign-in" target="_blank" data-type="admin" data-icon="🛂" data-desc="B.com Extranet.">B.com Login</a>` +
-                    `<a href="https://inbox.hostelworld.com/" target="_blank" data-type="admin" data-icon="🛂" data-desc="HW Extranet.">HW Login</a>`;
+        let items = `<a href="https://inbox.myallocator.com/en/availability/58137" target="_blank" data-type="admin" data-icon="🌐" data-desc="Sync.">MyAllocator</a><a href="https://account.booking.com/sign-in" target="_blank" data-type="admin" data-icon="🛂" data-desc="B.com.">B.com Login</a><a href="https://inbox.hostelworld.com/" target="_blank" data-type="admin" data-icon="🛂" data-desc="HW.">HW Login</a>`;
         html += `<div class="nav-item"><span class="drop-btn">Admin ▾</span><div class="dropdown-content">${items}</div></div>`;
     }
-
-    // 3. BOOKING
     if (['BOSS', 'REC', 'OA'].includes(user)) {
-        let items = `<a href="https://sg.loventis.net/Reception" target="_blank" data-type="booking" data-icon="🏩" data-desc="Reservation management.">Loventis (PMS)</a>` +
-                    `<a href="https://docs.google.com/spreadsheets/d/1UqivgGUjV0JAO2vB4QFjdw0c62pSsdlMsna-z4xE_SQ/edit?usp=sharing" target="_blank" data-type="booking" data-icon="💸" data-desc="Refund tracking.">Refundability</a>` +
-                    `<a href="${fix('https://loren-6q.github.io/WETParser/')}" data-type="booking" data-icon="📑" data-desc="Clean data.">Parser</a>`;
-        if (['BOSS', 'OA'].includes(user)) items += `<a href="${fix('https://loren-6q.github.io/WETReviews/')}" data-type="booking" data-icon="⭐" data-desc="Guest feedback.">WET Reviews</a>`;
+        let items = `<a href="https://sg.loventis.net/Reception" target="_blank" data-type="booking" data-icon="🏩" data-desc="PMS.">Loventis</a><a href="https://docs.google.com/spreadsheets/d/1UqivgGUjV0JAO2vB4QFjdw0c62pSsdlMsna-z4xE_SQ/edit?usp=sharing" target="_blank" data-type="booking" data-icon="💸" data-desc="Policy.">Refundability</a><a href="${fix('https://loren-6q.github.io/WETParser/')}" data-type="booking" data-icon="📑" data-desc="Clean.">Parser</a>`;
+        if (['BOSS', 'OA'].includes(user)) items += `<a href="${fix('https://loren-6q.github.io/WETReviews/')}" data-type="booking" data-icon="⭐" data-desc="Feedback.">WET Reviews</a>`;
         html += `<div class="nav-item"><span class="drop-btn">Booking ▾</span><div class="dropdown-content">${items}</div></div>`;
     }
-
-    // 4. PRICE QUOTES
     if (['BOSS', 'REC', 'OA', 'BAR'].includes(user)) {
         let items = "";
-        if (['BOSS', 'REC', 'OA'].includes(user)) items += `<a href="${fix('https://loren-6q.github.io/WETPricer/')}" data-type="quotes" data-icon="🏷️" data-desc="Quote & compare.">WET Pricer</a>`;
-        items += `<a href="https://inbox.myallocator.com/booknow/-sxO1cCV5jLMwqZTXY629A" target="_blank" data-type="quotes" data-icon="🏨" data-desc="Direct rates.">WET Booking Engine</a>`;
-        if (['BOSS', 'REC', 'OA'].includes(user)) {
-            items += `<a href="https://www.booking.com/searchresults.en-gb.html?dest_id=900050772" target="_blank" data-type="quotes" data-icon="🔵" data-desc="B.com search.">B.com Search</a>` +
-                     `<a href="https://www.hostelworld.com/pwa/s?q=Koh%20Phangan" target="_blank" data-type="quotes" data-icon="🟠" data-desc="HW search.">HW Search</a>` +
-                     `<a href="https://www.booking.com/hotel/th/wet-pool-party-haad-rin.html" target="_blank" data-type="quotes" data-icon="🔗" data-desc="WET on B.com.">WET on B.com</a>` +
-                     `<a href="https://www.hostelworld.com/pwa/hosteldetails.php/WET-a-Pool-Party-Hostel-by-Wild-Wandering/Koh-Phangan/313418" target="_blank" data-type="quotes" data-icon="🔗" data-desc="WET on HW.">WET on HW</a>`;
-        }
+        if (['BOSS', 'REC', 'OA'].includes(user)) items += `<a href="${fix('https://loren-6q.github.io/WETPricer/')}" data-type="quotes" data-icon="🏷️" data-desc="Compare.">WET Pricer</a>`;
+        items += `<a href="https://inbox.myallocator.com/booknow/-sxO1cCV5jLMwqZTXY629A" target="_blank" data-type="quotes" data-icon="🏨" data-desc="Direct.">Booking Engine</a>`;
+        if (['BOSS', 'REC', 'OA'].includes(user)) items += `<a href="https://www.booking.com/searchresults.en-gb.html?dest_id=900050772" target="_blank" data-type="quotes" data-icon="🔵" data-desc="B.com.">B.com Search</a><a href="https://www.hostelworld.com/pwa/s?q=Koh%20Phangan" target="_blank" data-type="quotes" data-icon="🟠" data-desc="HW.">HW Search</a><a href="https://www.booking.com/hotel/th/wet-pool-party-haad-rin.html" target="_blank" data-type="quotes" data-icon="🔗" data-desc="WET B.com.">WET on B.com</a><a href="https://www.hostelworld.com/pwa/hosteldetails.php/WET-a-Pool-Party-Hostel-by-Wild-Wandering/Koh-Phangan/313418" target="_blank" data-type="quotes" data-icon="🔗" data-desc="WET HW.">WET on HW</a>`;
         html += `<div class="nav-item"><span class="drop-btn">Quotes ▾</span><div class="dropdown-content">${items}</div></div>`;
     }
-
-    // 5. STAFFING
     if (['BOSS', 'REC', 'OA'].includes(user)) {
-        let items = `<a href="${fix('https://loren-6q.github.io/WETvCal/')}" data-type="staffing" data-icon="🗓️" data-desc="Temp workers.">V Cal</a>` +
-                    `<a href="${fix('https://staff-scheduler.onrender.com/')}" target="_blank" data-type="staffing" data-icon="📅" data-desc="Scheduler.">Scheduler</a>`;
+        let items = `<a href="${fix('https://loren-6q.github.io/WETvCal/')}" data-type="staffing" data-icon="🗓️" data-desc="Temp.">V Cal</a><a href="${fix('https://staff-scheduler.onrender.com/')}" target="_blank" data-type="staffing" data-icon="📅" data-desc="Roster.">Scheduler</a>`;
         html += `<div class="nav-item"><span class="drop-btn">Staffing ▾</span><div class="dropdown-content">${items}</div></div>`;
     }
-
-    // 6. OPS
     if (['BOSS', 'BAR', 'REC', 'OA', 'HK'].includes(user)) {
         let items = "";
-        if (['BOSS', 'REC', 'BAR'].includes(user)) items += `<a href="#" data-type="ops" data-icon="💳" data-desc="Point of sale.">POS</a>`;
-        if (['BOSS', 'REC', 'BAR', 'OA'].includes(user)) items += `<a href="${fix('https://bar-stock-nine.vercel.app/')}" data-type="ops" data-icon="🍺" data-desc="Stock check.">Stock</a>`;
-        if (['BOSS', 'OA'].includes(user)) items += `<a href="${fix('https://loren-6q.github.io/Full-Moon-Week-Schedule/')}" data-type="ops" data-icon="🌕" data-desc="Instagram tool.">FMW</a>`;
-        if (['BOSS', 'REC', 'HK'].includes(user)) items += `<a href="${fix('https://loren-6q.github.io/WETDoors/')}" data-type="ops" data-icon="🔒" data-desc="Access control.">Doors</a>`;
+        if (['BOSS', 'REC', 'BAR'].includes(user)) items += `<a href="#" data-type="ops" data-icon="💳" data-desc="Sales.">POS</a>`;
+        if (['BOSS', 'REC', 'BAR', 'OA'].includes(user)) items += `<a href="${fix('https://bar-stock-nine.vercel.app/')}" data-type="ops" data-icon="🍺" data-desc="Inventory.">Stock</a>`;
+        if (['BOSS', 'OA'].includes(user)) items += `<a href="${fix('https://loren-6q.github.io/Full-Moon-Week-Schedule/')}" data-type="ops" data-icon="🌕" data-desc="Insta.">FMW</a>`;
+        if (['BOSS', 'REC', 'HK'].includes(user)) items += `<a href="${fix('https://loren-6q.github.io/WETDoors/')}" data-type="ops" data-icon="🔒" data-desc="Locks.">Doors</a>`;
         html += `<div class="nav-item"><span class="drop-btn">Ops ▾</span><div class="dropdown-content">${items}</div></div>`;
     }
-
-    // MANUAL LINK (Accessible to all)
     html += `<div class="nav-item"><a href="${fix('https://loren-6q.github.io/WETNav/manual.html')}">Manual</a></div>`;
-
-    const bar = document.createElement('nav');
-    bar.id = 'global-nav';
+    const bar = document.createElement('nav'); bar.id = 'global-nav';
     bar.innerHTML = `<a href="${fix('https://loren-6q.github.io/WETNav/')}" class="nav-logo"><img src="https://raw.githubusercontent.com/loren-6q/WETNav/main/logo-icon.png"><span>WET HUB</span></a><button id="nav-toggle">MENU</button><div id="nav-links">${html}</div>`;
     document.head.insertAdjacentHTML('beforeend', navStyle);
-    document.body.prepend(bar);
-    document.body.style.paddingTop = "40px";
+    document.body.prepend(bar); document.body.style.paddingTop = "40px";
     const menu = document.getElementById('nav-links');
     document.getElementById('nav-toggle').onclick = () => menu.classList.add('active');
     document.getElementById('nav-close').onclick = () => menu.classList.remove('active');
