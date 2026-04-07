@@ -8,70 +8,156 @@
         :root { --blue: #37b5ff; --bg: #0f172a; --card: #1e293b; --text: #f1f5f9; --border: #334155; }
         body { background: var(--bg); color: var(--text); font-family: system-ui, sans-serif; margin: 0; padding: 60px 20px 100px; line-height: 1.6; }
         .container { max-width: 900px; margin: 0 auto; }
-        header { border-left: 4px solid gold; padding-left: 20px; margin-bottom: 40px; }
+        
+        header { border-left: 4px solid gold; padding-left: 20px; margin-bottom: 40px; display: flex; justify-content: space-between; align-items: center; }
+        header h1 { margin: 0; font-size: 32px; font-weight: 900; }
+        header p { margin: 0; color: #64748b; font-weight: bold; }
+        
+        .search-box { width: 100%; padding: 16px; background: var(--card); border: 1px solid var(--border); border-radius: 12px; color: white; font-size: 16px; margin-bottom: 30px; outline: none; }
+        
         .manual-section h2 { font-size: 13px; text-transform: uppercase; letter-spacing: 3px; color: var(--blue); border-bottom: 1px solid var(--border); padding-bottom: 12px; margin: 40px 0 20px; }
-        .app-entry { background: var(--card); border-radius: 14px; padding: 25px; margin-bottom: 20px; border: 1px solid var(--border); }
+        
+        .app-entry { background: var(--card); border-radius: 14px; padding: 25px; margin-bottom: 30px; border: 1px solid var(--border); }
         .app-title { font-size: 22px; font-weight: 800; color: white; margin-bottom: 15px; display: block; }
-        .instructions { background: rgba(0,0,0,0.3); padding: 20px; border-radius: 10px; font-size: 16px; color: #cbd5e1; border: 1px solid rgba(255,255,255,0.05); }
-        .instructions:focus { outline: 2px solid gold; }
-        #editor-tools { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #fff; padding: 10px 20px; border-radius: 50px; display: none; gap: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); z-index: 1000002; }
+        
+        /* THE EDITOR BOX */
+        .instructions { background: rgba(0, 0, 0, 0.3); padding: 20px; border-radius: 10px; font-size: 16px; color: #cbd5e1; border: 1px solid rgba(255,255,255,0.1); min-height: 50px; }
+        .instructions:focus { outline: 2px solid gold; background: rgba(55, 181, 255, 0.05); }
+        
+        /* FULL RICH TEXT TOOLBAR */
+        #editor-tools { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #fff; padding: 10px 20px; border-radius: 50px; display: none; gap: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); z-index: 1000002; align-items: center; }
         #editor-tools button { background: #eee; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer; font-weight: bold; color: #333; }
-        .save-btn { background: #10b981 !important; color: white !important; }
-        .export-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 1000005; justify-content: center; align-items: center; padding: 20px; }
-        pre { background: #000; color: #adff2f; padding: 20px; overflow: auto; font-size: 11px; max-height: 500px; border-radius: 10px; width: 100%; }
+        #editor-tools button:hover { background: var(--blue); color: white; }
+        .save-btn { background: #10b981 !important; color: white !important; margin-left: 10px; }
+        
+        .export-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 1000005; justify-content: center; align-items: center; padding: 20px; box-sizing: border-box; }
+        .export-content { background: var(--card); padding: 30px; border-radius: 15px; width: 100%; max-width: 800px; }
+        pre { background: #000; color: #adff2f; padding: 20px; overflow-x: auto; font-size: 11px; border-radius: 8px; max-height: 400px; white-space: pre-wrap; word-wrap: break-word; }
+        
         .hidden { display: none !important; }
     </style>
 </head>
 <body>
     <div class="container">
-        <header><h1>COMPANY MANUAL</h1><p id="mode-text">Read Only</p></header>
+        <header>
+            <div><h1>COMPANY MANUAL</h1><p id="mode-text">Read Only</p></div>
+            <a href="index.html" style="color:var(--blue); text-decoration:none; font-weight:bold; font-size:20px;">← HUB</a>
+        </header>
+
         <div id="editor-tools">
-            <button onclick="document.execCommand('bold')">B</button>
-            <button onclick="document.execCommand('insertUnorderedList')">• List</button>
-            <button class="save-btn" onclick="showExport()">🚀 EXPORT NEW NAV.JS</button>
+            <button onclick="execCmd('bold')" title="Bold">B</button>
+            <button onclick="execCmd('italic')" title="Italic">I</button>
+            <button onclick="execCmd('underline')" title="Underline">U</button>
+            <button onclick="execCmd('formatBlock', 'H3')" title="Header 3">H3</button>
+            <button onclick="execCmd('insertUnorderedList')" title="Bullet List">• List</button>
+            <button class="save-btn" onclick="showExport()">🚀 EXPORT TO NAV.JS</button>
         </div>
+
+        <input type="text" id="manualSearch" class="search-box" placeholder="Search instructions..." onkeyup="searchManual()">
         <div id="manual-content"></div>
     </div>
+
     <div id="export-overlay" class="export-overlay">
-        <div style="background:var(--card); padding:30px; border-radius:15px; width:90%; max-width:800px;">
-            <h2>Copy this code into nav.js</h2>
+        <div class="export-content">
+            <h2>Copy this into your nav.js</h2>
+            <p style="font-size:13px; color:#94a3b8;">Replace ALL the text in your current nav.js file with this new code:</p>
             <pre id="export-code"></pre>
-            <button onclick="location.reload()" style="background:var(--blue); color:white; padding:10px 20px; border-radius:5px; margin-top:10px;">Done</button>
+            <button onclick="document.getElementById('export-overlay').style.display='none'" style="background:var(--blue); color:white; padding:10px 20px; border-radius:5px; margin-top:10px;">Close Window</button>
         </div>
     </div>
+
     <script src="nav.js"></script>
     <script>
         const user = new URLSearchParams(window.location.search).get('user');
         const isBoss = user === 'BOSS';
-        if(isBoss) { document.getElementById('editor-tools').style.display='flex'; document.getElementById('mode-text').innerText='EDIT MODE'; }
+
+        if(isBoss) {
+            document.getElementById('editor-tools').style.display = 'flex';
+            document.getElementById('mode-text').innerText = 'EDIT MODE ACTIVE';
+            document.getElementById('mode-text').style.color = 'gold';
+        }
+
+        // Executes the Rich Text commands
+        function execCmd(cmd, val = null) { 
+            document.execCommand(cmd, false, val); 
+        }
+
         const buildManual = () => {
-            const navLinks = document.querySelectorAll('#global-nav a'); const content = document.getElementById('manual-content');
+            const navLinks = document.querySelectorAll('#global-nav a');
+            const content = document.getElementById('manual-content');
             if (navLinks.length < 2) return false;
+
             const cats = { accounting: "Accounting", admin: "Administration", booking: "Booking", quotes: "Quotes", staffing: "Staffing", ops: "Operations" };
             content.innerHTML = '';
-            Object.keys(cats).forEach(cat => { const sec = document.createElement('div'); sec.className = 'manual-section'; sec.id = `parent-${cat}`; sec.innerHTML = `<h2>${cats[cat]}</h2><div id="sec-${cat}"></div>`; content.appendChild(sec); });
+
+            Object.keys(cats).forEach(cat => {
+                const sec = document.createElement('div');
+                sec.className = 'manual-section';
+                sec.id = `parent-${cat}`;
+                sec.innerHTML = `<h2>${cats[cat]}</h2><div id="sec-${cat}"></div>`;
+                content.appendChild(sec);
+            });
+
             navLinks.forEach(link => {
-                const type = link.getAttribute('data-type'); if (!type || !cats[type]) return;
-                const entry = document.createElement('div'); entry.className = 'app-entry';
-                // Pull Detailed Manual Text
-                const manualText = link.getAttribute('data-manual') || "Enter instructions...";
-                entry.innerHTML = `<span class="app-title">${link.getAttribute('data-icon')} ${link.innerText}</span><div class="instructions" contenteditable="${isBoss}" data-id="${link.innerText.trim()}">${manualText}</div>`;
+                const type = link.getAttribute('data-type');
+                if (!type || !cats[type]) return;
+
+                const entry = document.createElement('div');
+                entry.className = 'app-entry';
+                const currentText = link.getAttribute('data-manual') || "Enter instructions here...";
+
+                entry.innerHTML = `
+                    <span class="app-title">${link.getAttribute('data-icon') || '🔗'} ${link.innerText}</span>
+                    <div class="instructions" 
+                         contenteditable="${isBoss}" 
+                         data-id="${link.innerText.trim()}">
+                         ${currentText}
+                    </div>
+                `;
                 document.getElementById(`sec-${type}`).appendChild(entry);
+            });
+
+            // Clean up empty sections
+            Object.keys(cats).forEach(cat => {
+                if (document.getElementById(`sec-${cat}`).children.length === 0) {
+                    document.getElementById(`parent-${cat}`).remove();
+                }
             });
             return true;
         };
+
         function showExport() {
             let rawFunc = renderNav.toString();
+            
+            // Collect all edits and strip out line breaks so they don't break JS syntax
             document.querySelectorAll('.instructions').forEach(box => {
                 const id = box.getAttribute('data-id');
-                const newManual = box.innerHTML.replace(/\n/g, '').trim();
+                const newText = box.innerHTML.replace(/\n/g, '').replace(/\r/g, '').trim();
+                
+                // Regex targeted specifically at the data-manual attribute
                 const regex = new RegExp(`data-manual="([^"]*)"([^>]*>${id}<)`, 'g');
-                rawFunc = rawFunc.replace(regex, `data-manual="${newManual}"$2`);
+                rawFunc = rawFunc.replace(regex, `data-manual="${newText}"$2`);
             });
-            document.getElementById('export-code').innerText = "const navStyle = `" + navStyle + "`;\n\nconst renderNav = " + rawFunc + ";\n\nrenderNav();";
+
+            // Reconstruct the exact structure of nav.js
+            const finalOutput = "/* Font Import */\nconst fontLink = document.createElement('link');\nfontLink.rel = 'stylesheet';\nfontLink.href = 'https://fonts.googleapis.com/css2?family=Archivo+Narrow:wght@600;700&display=swap';\ndocument.head.appendChild(fontLink);\n\nconst navStyle = `" + navStyle + "`;\n\nconst renderNav = " + rawFunc + ";\nrenderNav();";
+            
+            document.getElementById('export-code').innerText = finalOutput;
             document.getElementById('export-overlay').style.display = 'flex';
         }
-        const observer = new MutationObserver(() => { if (buildManual()) observer.disconnect(); }); observer.observe(document.body, { childList: true, subtree: true });
+
+        function searchManual() {
+            let input = document.getElementById('manualSearch').value.toLowerCase();
+            document.querySelectorAll('.app-entry').forEach(e => {
+                e.classList.toggle('hidden', !e.innerText.toLowerCase().includes(input));
+            });
+            document.querySelectorAll('.manual-section').forEach(s => {
+                s.classList.toggle('hidden', s.querySelectorAll('.app-entry:not(.hidden)').length === 0);
+            });
+        }
+
+        const observer = new MutationObserver(() => { if (buildManual()) observer.disconnect(); });
+        observer.observe(document.body, { childList: true, subtree: true });
     </script>
 </body>
 </html>
