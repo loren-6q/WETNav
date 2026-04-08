@@ -130,11 +130,14 @@
                 entry.className = 'app-entry';
                 const fallbackText = link.getAttribute('data-manual') || link.getAttribute('data-desc') || "Loading from cloud...";
 
+                // THIS IS THE FIX: Remove periods and brackets from the ID so Firebase doesn't crash
+                const safeId = link.innerText.trim().replace(/[.#$\[\]]/g, '_');
+
                 entry.innerHTML = `
                     <span class="app-title">${link.getAttribute('data-icon') || '🔗'} ${link.innerText}</span>
                     <div class="instructions" 
                          contenteditable="${isBoss}" 
-                         data-id="${link.innerText.trim()}">
+                         data-id="${safeId}">
                          ${fallbackText}
                     </div>
                 `;
@@ -170,45 +173,56 @@
             const btn = document.getElementById('save-cloud-btn');
             btn.innerText = '⏳ SAVING...';
             
-            let dataToSave = {};
-            document.querySelectorAll('.instructions').forEach(box => {
-                const id = box.getAttribute('data-id');
-                dataToSave[id] = box.innerHTML;
-            });
+            try {
+                let dataToSave = {};
+                document.querySelectorAll('.instructions').forEach(box => {
+                    const id = box.getAttribute('data-id');
+                    dataToSave[id] = box.innerHTML;
+                });
 
-            // 5 SECOND TIMEOUT SO IT DOESNT HANG FOREVER
-            const timeout = new Promise((resolve, reject) => {
-                setTimeout(() => reject(new Error("Timeout: Could not connect to Database. Check your URL or Rules.")), 5000);
-            });
+                const timeout = new Promise((resolve, reject) => {
+                    setTimeout(() => reject(new Error("Timeout: Could not connect to Database. Check your URL or Rules.")), 5000);
+                });
 
-            Promise.race([
-                db.ref('wet_manual_docs').set(dataToSave),
-                timeout
-            ])
-            .then(() => {
-                btn.innerText = '✅ SAVED TO CLOUD';
-                btn.style.background = '#059669';
-                setTimeout(() => {
-                    btn.innerText = '💾 SAVE TO CLOUD';
-                    btn.style.background = '';
-                }, 2000);
-            })
-            .catch((error) => {
-                console.error("Save failed:", error);
-                
-                if(error.message.includes('permission_denied')) {
-                    alert("Firebase Rules Error: You need to set .read and .write to true in your Firebase Console.");
-                } else {
-                    alert(error.message);
-                }
+                Promise.race([
+                    db.ref('wet_manual_docs').set(dataToSave),
+                    timeout
+                ])
+                .then(() => {
+                    btn.innerText = '✅ SAVED TO CLOUD';
+                    btn.style.background = '#059669';
+                    setTimeout(() => {
+                        btn.innerText = '💾 SAVE TO CLOUD';
+                        btn.style.background = '';
+                    }, 2000);
+                })
+                .catch((error) => {
+                    console.error("Save failed:", error);
+                    
+                    if(error.message.includes('permission_denied')) {
+                        alert("Firebase Rules Error: You need to set .read and .write to true in your Firebase Console.");
+                    } else {
+                        alert(error.message);
+                    }
 
+                    btn.innerText = '❌ ERROR';
+                    btn.style.background = '#ef4444';
+                    setTimeout(() => {
+                        btn.innerText = '💾 TRY AGAIN';
+                        btn.style.background = '';
+                    }, 3000);
+                });
+            } catch (err) {
+                // Catches synchronous errors (like bad keys)
+                console.error("Sync error:", err);
+                alert("Error: " + err.message);
                 btn.innerText = '❌ ERROR';
                 btn.style.background = '#ef4444';
                 setTimeout(() => {
                     btn.innerText = '💾 TRY AGAIN';
                     btn.style.background = '';
                 }, 3000);
-            });
+            }
         }
 
         function searchManual() {
