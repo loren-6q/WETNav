@@ -20,32 +20,21 @@
         .app-entry { background: var(--card); border-radius: 14px; padding: 25px; margin-bottom: 30px; border: 1px solid var(--border); }
         .app-title { font-size: 22px; font-weight: 800; color: white; margin-bottom: 15px; display: block; }
         
-        .instructions { background: rgba(0, 0, 0, 0.3); padding: 20px; border-radius: 10px; font-size: 16px; color: #cbd5e1; border: 1px solid rgba(255,255,255,0.05); min-height: 50px; }
+        .instructions { background: rgba(0, 0, 0, 0.3); padding: 20px; border-radius: 10px; font-size: 16px; color: #cbd5e1; border: 1px solid rgba(255,255,255,0.1); min-height: 50px; transition: 0.2s; }
         .instructions:focus { outline: 2px solid gold; background: rgba(55, 181, 255, 0.05); }
         
-        /* FULL RICH TEXT TOOLBAR WITH H1/H2 */
+        /* FULL RICH TEXT TOOLBAR */
         #editor-tools { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #fff; padding: 10px 20px; border-radius: 50px; display: none; gap: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); z-index: 1000002; align-items: center; }
-        #editor-tools button { background: #eee; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer; font-weight: bold; color: #333; }
+        #editor-tools button { background: #eee; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer; font-weight: bold; color: #333; transition: 0.2s; }
         #editor-tools button:hover { background: var(--blue); color: white; }
-        .save-btn { background: #10b981 !important; color: white !important; margin-left: 10px; }
-        
-        /* MODERNIZED EXPORT MODAL */
-        .export-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.95); z-index: 1000005; justify-content: center; align-items: center; padding: 20px; box-sizing: border-box; backdrop-filter: blur(8px); }
-        .export-content { background: var(--bg); padding: 30px; border-radius: 12px; width: 100%; max-width: 850px; border: 1px solid var(--border); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6); }
-        .export-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .export-header h2 { margin: 0; color: white; font-size: 24px; }
-        
-        .code-container { position: relative; margin: 20px 0; background: var(--card); border-radius: 8px; border: 1px solid var(--border); }
-        .code-header { background: rgba(0,0,0,0.2); padding: 10px 15px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; border-radius: 8px 8px 0 0; }
-        .code-title { color: #94a3b8; font-family: monospace; font-size: 13px; }
-        
-        #copy-btn { background: #10b981; color: white; border: none; padding: 6px 14px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 13px; transition: 0.2s; }
-        #copy-btn:hover { background: #059669; }
-        
-        pre { background: transparent; color: #e2e8f0; padding: 20px; overflow-y: auto; font-size: 13px; max-height: 50vh; white-space: pre-wrap; word-wrap: break-word; margin: 0; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; line-height: 1.5; }
+        #save-cloud-btn { background: #10b981 !important; color: white !important; margin-left: 10px; padding: 8px 16px !important; }
+        #save-cloud-btn:hover { background: #059669 !important; }
         
         .hidden { display: none !important; }
     </style>
+    
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 </head>
 <body>
     <div class="container">
@@ -62,34 +51,35 @@
             <button onclick="execCmd('formatBlock', 'H2')" title="Header 2">H2</button>
             <button onclick="execCmd('formatBlock', 'H3')" title="Header 3">H3</button>
             <button onclick="execCmd('insertUnorderedList')" title="Bullet List">• List</button>
-            <button class="save-btn" onclick="showExport()">🚀 EXPORT TO NAV.JS</button>
+            <button id="save-cloud-btn" onclick="saveToCloud()">💾 SAVE TO CLOUD</button>
         </div>
 
         <input type="text" id="manualSearch" class="search-box" placeholder="Search instructions..." onkeyup="searchManual()">
         <div id="manual-content"></div>
     </div>
 
-    <div id="export-overlay" class="export-overlay">
-        <div class="export-content">
-            <div class="export-header">
-                <h2>Export Configuration</h2>
-                <button onclick="document.getElementById('export-overlay').style.display='none'" style="background:none; border:none; color:#94a3b8; font-size:24px; cursor:pointer;">✕</button>
-            </div>
-            <p style="font-size:15px; color:#94a3b8; margin: 0 0 5px 0;">Use the copy button below, then replace everything in your GitHub <b>nav.js</b> file with this code.</p>
-            
-            <div class="code-container">
-                <div class="code-header">
-                    <span class="code-title">📄 nav.js</span>
-                    <button id="copy-btn" onclick="copyCode()">📋 Copy Code</button>
-                </div>
-                <pre id="export-code"></pre>
-            </div>
-            
-        </div>
-    </div>
-
     <script src="nav.js"></script>
     <script>
+        // ==========================================
+        // 1. FIREBASE CONFIGURATION
+        // ==========================================
+        const firebaseConfig = {
+            apiKey: "AIzaSyAZP4qv_VYnWNlChvq8NXMVuZPMmReiiHg",
+            authDomain: "wethub2.firebaseapp.com",
+            databaseURL: "https://wethub2-default-rtdb.asia-southeast1.firebasedatabase.app", 
+            projectId: "wethub2",
+            storageBucket: "wethub2.firebasestorage.app",
+            messagingSenderId: "142301545183",
+            appId: "1:142301545183:web:4c2cb3db629fb44764df6a"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        // ==========================================
+        // 2. APP LOGIC
+        // ==========================================
         const user = new URLSearchParams(window.location.search).get('user');
         const isBoss = user === 'BOSS';
 
@@ -103,14 +93,19 @@
             document.execCommand(cmd, false, val); 
         }
 
-        const buildManual = () => {
+        let isBuilt = false;
+
+        const buildManual = async () => {
+            if (isBuilt) return true;
             const navLinks = document.querySelectorAll('#global-nav a');
             const content = document.getElementById('manual-content');
             if (navLinks.length < 2) return false;
 
+            isBuilt = true; 
             const cats = { accounting: "Accounting", admin: "Administration", booking: "Booking", quotes: "Quotes", staffing: "Staffing", ops: "Operations" };
             content.innerHTML = '';
 
+            // Build Skeleton
             Object.keys(cats).forEach(cat => {
                 const sec = document.createElement('div');
                 sec.className = 'manual-section';
@@ -125,61 +120,82 @@
 
                 const entry = document.createElement('div');
                 entry.className = 'app-entry';
-                const currentText = link.getAttribute('data-manual') || link.getAttribute('data-desc') || "Enter instructions here...";
+                // Loads the fallback text from nav.js in case Firebase hasn't saved anything yet
+                const fallbackText = link.getAttribute('data-manual') || link.getAttribute('data-desc') || "Loading from cloud...";
 
                 entry.innerHTML = `
                     <span class="app-title">${link.getAttribute('data-icon') || '🔗'} ${link.innerText}</span>
                     <div class="instructions" 
                          contenteditable="${isBoss}" 
                          data-id="${link.innerText.trim()}">
-                         ${currentText}
+                         ${fallbackText}
                     </div>
                 `;
                 document.getElementById(`sec-${type}`).appendChild(entry);
             });
 
+            // Clean empty sections
             Object.keys(cats).forEach(cat => {
                 if (document.getElementById(`sec-${cat}`).children.length === 0) {
                     document.getElementById(`parent-${cat}`).remove();
                 }
             });
+
+            // FETCH FROM CLOUD
+            try {
+                const snapshot = await db.ref('wet_manual_docs').once('value');
+                const cloudData = snapshot.val();
+                
+                if (cloudData) {
+                    document.querySelectorAll('.instructions').forEach(box => {
+                        const id = box.getAttribute('data-id');
+                        if (cloudData[id]) {
+                            box.innerHTML = cloudData[id];
+                        }
+                    });
+                }
+            } catch (error) {
+                console.error("Error loading manual from Firebase:", error);
+            }
+
             return true;
         };
 
-        function showExport() {
-            let rawFunc = renderNav.toString();
+        function saveToCloud() {
+            const btn = document.getElementById('save-cloud-btn');
+            btn.innerText = '⏳ SAVING...';
             
+            let dataToSave = {};
             document.querySelectorAll('.instructions').forEach(box => {
                 const id = box.getAttribute('data-id');
-                let newText = box.innerHTML.replace(/\n/g, '').replace(/\r/g, '').trim();
-                newText = newText.replace(/"/g, "'");
-
-                const regex = new RegExp(`data-manual="([^"]*)"([^>]*>${id}<)`, 'g');
-                
-                if(rawFunc.match(regex)) {
-                    rawFunc = rawFunc.replace(regex, `data-manual="${newText}"$2`);
-                } else {
-                    const fallbackRegex = new RegExp(`data-desc="([^"]*)"([^>]*>${id}<)`, 'g');
-                    rawFunc = rawFunc.replace(fallbackRegex, `data-desc="$1" data-manual="${newText}"$2`);
-                }
+                dataToSave[id] = box.innerHTML;
             });
 
-            const finalOutput = "/* Font Import */\nconst fontLink = document.createElement('link');\nfontLink.rel = 'stylesheet';\nfontLink.href = 'https://fonts.googleapis.com/css2?family=Archivo+Narrow:wght@600;700&display=swap';\ndocument.head.appendChild(fontLink);\n\nconst navStyle = `" + navStyle + "`;\n\nconst renderNav = " + rawFunc + ";\nrenderNav();";
-            
-            document.getElementById('export-code').innerText = finalOutput;
-            document.getElementById('copy-btn').innerText = '📋 Copy Code';
-            document.getElementById('export-overlay').style.display = 'flex';
-        }
+            // Push to Firebase Realtime Database
+            db.ref('wet_manual_docs').set(dataToSave)
+                .then(() => {
+                    btn.innerText = '✅ SAVED TO CLOUD';
+                    btn.style.background = '#059669';
+                    setTimeout(() => {
+                        btn.innerText = '💾 SAVE TO CLOUD';
+                        btn.style.background = '';
+                    }, 2000);
+                })
+                .catch((error) => {
+                    console.error("Save failed:", error);
+                    btn.innerText = '❌ ERROR SAVING';
+                    btn.style.background = '#ef4444';
+                    
+                    // Specific error handling for permissions
+                    if(error.message.includes('permission_denied')) {
+                        alert("Permission Denied: Please check your Firebase Database Rules. They need to be set to true for read and write.");
+                    }
 
-        function copyCode() {
-            const textToCopy = document.getElementById('export-code').innerText;
-            navigator.clipboard.writeText(textToCopy).then(() => {
-                const btn = document.getElementById('copy-btn');
-                btn.innerText = '✅ Copied!';
-                setTimeout(() => btn.innerText = '📋 Copy Code', 2000);
-            }).catch(err => {
-                console.error('Failed to copy text: ', err);
-            });
+                    setTimeout(() => {
+                        btn.innerText = '💾 TRY AGAIN';
+                        btn.style.background = '';
+                    }, 3000);
+                });
         }
 
         function searchManual() {
