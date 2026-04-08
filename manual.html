@@ -20,17 +20,15 @@
         .app-entry { background: var(--card); border-radius: 14px; padding: 25px; margin-bottom: 30px; border: 1px solid var(--border); }
         .app-title { font-size: 22px; font-weight: 800; color: white; margin-bottom: 15px; display: block; }
         
-        /* THE EDITOR BOX */
         .instructions { background: rgba(0, 0, 0, 0.3); padding: 20px; border-radius: 10px; font-size: 16px; color: #cbd5e1; border: 1px solid rgba(255,255,255,0.1); min-height: 50px; }
         .instructions:focus { outline: 2px solid gold; background: rgba(55, 181, 255, 0.05); }
         
-        /* FULL RICH TEXT TOOLBAR */
+        /* FULL RICH TEXT TOOLBAR WITH H1/H2 */
         #editor-tools { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #fff; padding: 10px 20px; border-radius: 50px; display: none; gap: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); z-index: 1000002; align-items: center; }
         #editor-tools button { background: #eee; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer; font-weight: bold; color: #333; }
         #editor-tools button:hover { background: var(--blue); color: white; }
         .save-btn { background: #10b981 !important; color: white !important; margin-left: 10px; }
         
-        /* REDESIGNED EXPORT MODAL */
         .export-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1000005; justify-content: center; align-items: center; padding: 20px; box-sizing: border-box; backdrop-filter: blur(5px); }
         .export-content { background: var(--card); padding: 30px; border-radius: 15px; width: 100%; max-width: 800px; border: 1px solid var(--border); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); }
         .code-container { position: relative; margin: 20px 0; }
@@ -52,6 +50,8 @@
             <button onclick="execCmd('bold')" title="Bold">B</button>
             <button onclick="execCmd('italic')" title="Italic">I</button>
             <button onclick="execCmd('underline')" title="Underline">U</button>
+            <button onclick="execCmd('formatBlock', 'H1')" title="Header 1">H1</button>
+            <button onclick="execCmd('formatBlock', 'H2')" title="Header 2">H2</button>
             <button onclick="execCmd('formatBlock', 'H3')" title="Header 3">H3</button>
             <button onclick="execCmd('insertUnorderedList')" title="Bullet List">• List</button>
             <button class="save-btn" onclick="showExport()">🚀 EXPORT TO NAV.JS</button>
@@ -138,10 +138,12 @@
             
             document.querySelectorAll('.instructions').forEach(box => {
                 const id = box.getAttribute('data-id');
-                const newText = box.innerHTML.replace(/\n/g, '').replace(/\r/g, '').trim();
+                // VERY IMPORTANT: This line converts double quotes to single quotes to protect the DOM
+                let newText = box.innerHTML.replace(/\n/g, '').replace(/\r/g, '').trim();
+                newText = newText.replace(/"/g, "'");
+
                 const regex = new RegExp(`data-manual="([^"]*)"([^>]*>${id}<)`, 'g');
                 
-                // If it doesn't have a data-manual attribute yet, this will add it
                 if(rawFunc.match(regex)) {
                     rawFunc = rawFunc.replace(regex, `data-manual="${newText}"$2`);
                 } else {
@@ -153,8 +155,6 @@
             const finalOutput = "/* Font Import */\nconst fontLink = document.createElement('link');\nfontLink.rel = 'stylesheet';\nfontLink.href = 'https://fonts.googleapis.com/css2?family=Archivo+Narrow:wght@600;700&display=swap';\ndocument.head.appendChild(fontLink);\n\nconst navStyle = `" + navStyle + "`;\n\nconst renderNav = " + rawFunc + ";\nrenderNav();";
             
             document.getElementById('export-code').innerText = finalOutput;
-            
-            // Reset the copy button text when opening the modal
             document.getElementById('copy-btn').innerText = '📋 Copy Code';
             document.getElementById('export-overlay').style.display = 'flex';
         }
