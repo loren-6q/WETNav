@@ -20,7 +20,7 @@
         .app-entry { background: var(--card); border-radius: 14px; padding: 25px; margin-bottom: 30px; border: 1px solid var(--border); }
         .app-title { font-size: 22px; font-weight: 800; color: white; margin-bottom: 15px; display: block; }
         
-        .instructions { background: rgba(0, 0, 0, 0.3); padding: 20px; border-radius: 10px; font-size: 16px; color: #cbd5e1; border: 1px solid rgba(255,255,255,0.1); min-height: 50px; }
+        .instructions { background: rgba(0, 0, 0, 0.3); padding: 20px; border-radius: 10px; font-size: 16px; color: #cbd5e1; border: 1px solid rgba(255,255,255,0.05); min-height: 50px; }
         .instructions:focus { outline: 2px solid gold; background: rgba(55, 181, 255, 0.05); }
         
         /* FULL RICH TEXT TOOLBAR WITH H1/H2 */
@@ -29,12 +29,20 @@
         #editor-tools button:hover { background: var(--blue); color: white; }
         .save-btn { background: #10b981 !important; color: white !important; margin-left: 10px; }
         
-        .export-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1000005; justify-content: center; align-items: center; padding: 20px; box-sizing: border-box; backdrop-filter: blur(5px); }
-        .export-content { background: var(--card); padding: 30px; border-radius: 15px; width: 100%; max-width: 800px; border: 1px solid var(--border); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); }
-        .code-container { position: relative; margin: 20px 0; }
-        #copy-btn { position: absolute; top: 15px; right: 15px; background: #10b981; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: bold; transition: 0.2s; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
-        #copy-btn:hover { background: #059669; transform: scale(1.05); }
-        pre { background: #000; color: #adff2f; padding: 60px 20px 20px; overflow-x: auto; font-size: 11.5px; border-radius: 8px; max-height: 400px; white-space: pre-wrap; word-wrap: break-word; border: 1px solid #334155; margin: 0; }
+        /* MODERNIZED EXPORT MODAL */
+        .export-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.95); z-index: 1000005; justify-content: center; align-items: center; padding: 20px; box-sizing: border-box; backdrop-filter: blur(8px); }
+        .export-content { background: var(--bg); padding: 30px; border-radius: 12px; width: 100%; max-width: 850px; border: 1px solid var(--border); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6); }
+        .export-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .export-header h2 { margin: 0; color: white; font-size: 24px; }
+        
+        .code-container { position: relative; margin: 20px 0; background: var(--card); border-radius: 8px; border: 1px solid var(--border); }
+        .code-header { background: rgba(0,0,0,0.2); padding: 10px 15px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; border-radius: 8px 8px 0 0; }
+        .code-title { color: #94a3b8; font-family: monospace; font-size: 13px; }
+        
+        #copy-btn { background: #10b981; color: white; border: none; padding: 6px 14px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 13px; transition: 0.2s; }
+        #copy-btn:hover { background: #059669; }
+        
+        pre { background: transparent; color: #e2e8f0; padding: 20px; overflow-y: auto; font-size: 13px; max-height: 50vh; white-space: pre-wrap; word-wrap: break-word; margin: 0; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; line-height: 1.5; }
         
         .hidden { display: none !important; }
     </style>
@@ -63,15 +71,20 @@
 
     <div id="export-overlay" class="export-overlay">
         <div class="export-content">
-            <h2 style="margin-top:0; color:white;">Export Configuration</h2>
-            <p style="font-size:14px; color:#94a3b8; margin-bottom: 5px;">Use the copy button below, then replace everything in your <b>nav.js</b> file with this new code.</p>
+            <div class="export-header">
+                <h2>Export Configuration</h2>
+                <button onclick="document.getElementById('export-overlay').style.display='none'" style="background:none; border:none; color:#94a3b8; font-size:24px; cursor:pointer;">✕</button>
+            </div>
+            <p style="font-size:15px; color:#94a3b8; margin: 0 0 5px 0;">Use the copy button below, then replace everything in your GitHub <b>nav.js</b> file with this code.</p>
             
             <div class="code-container">
-                <button id="copy-btn" onclick="copyCode()">📋 Copy Code</button>
+                <div class="code-header">
+                    <span class="code-title">📄 nav.js</span>
+                    <button id="copy-btn" onclick="copyCode()">📋 Copy Code</button>
+                </div>
                 <pre id="export-code"></pre>
             </div>
             
-            <button onclick="document.getElementById('export-overlay').style.display='none'" style="background:var(--border); color:white; padding:12px; border-radius:8px; cursor:pointer; width:100%; font-weight:bold; border:none; transition:0.2s;" onmouseover="this.style.background='#475569'" onmouseout="this.style.background='var(--border)'">Close Window</button>
         </div>
     </div>
 
@@ -138,7 +151,6 @@
             
             document.querySelectorAll('.instructions').forEach(box => {
                 const id = box.getAttribute('data-id');
-                // VERY IMPORTANT: This line converts double quotes to single quotes to protect the DOM
                 let newText = box.innerHTML.replace(/\n/g, '').replace(/\r/g, '').trim();
                 newText = newText.replace(/"/g, "'");
 
