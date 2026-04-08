@@ -11,7 +11,7 @@
         
         header { border-left: 4px solid gold; padding-left: 20px; margin-bottom: 40px; display: flex; justify-content: space-between; align-items: center; }
         header h1 { margin: 0; font-size: 32px; font-weight: 900; }
-        header p { margin: 0; color: #64748b; font-weight: bold; }
+        header p { margin: 0; color: #64748b; font-weight: bold; font-size: 14px; }
         
         .search-box { width: 100%; padding: 16px; background: var(--card); border: 1px solid var(--border); border-radius: 12px; color: white; font-size: 16px; margin-bottom: 30px; outline: none; }
         
@@ -39,7 +39,7 @@
 <body>
     <div class="container">
         <header>
-            <div><h1>COMPANY MANUAL</h1><p id="mode-text">Read Only</p></div>
+            <div><h1>COMPANY MANUAL</h1><p id="mode-text">Read Only (Connecting...)</p></div>
             <a href="index.html" style="color:var(--blue); text-decoration:none; font-weight:bold; font-size:20px;">← HUB</a>
         </header>
 
@@ -73,7 +73,6 @@
             appId: "1:142301545183:web:4c2cb3db629fb44764df6a"
         };
 
-        // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
@@ -83,10 +82,20 @@
         const user = new URLSearchParams(window.location.search).get('user');
         const isBoss = user === 'BOSS';
 
+        // LIVE CONNECTION MONITOR
+        const modeText = document.getElementById('mode-text');
+        db.ref('.info/connected').on('value', function(snap) {
+            if (snap.val() === true) {
+                modeText.innerText = isBoss ? 'EDIT MODE (🟢 ONLINE)' : 'Read Only (🟢 ONLINE)';
+                modeText.style.color = isBoss ? 'gold' : '#10b981';
+            } else {
+                modeText.innerText = isBoss ? 'EDIT MODE (🔴 OFFLINE)' : 'Read Only (🔴 OFFLINE)';
+                modeText.style.color = '#ef4444';
+            }
+        });
+
         if(isBoss) {
             document.getElementById('editor-tools').style.display = 'flex';
-            document.getElementById('mode-text').innerText = 'EDIT MODE ACTIVE';
-            document.getElementById('mode-text').style.color = 'gold';
         }
 
         function execCmd(cmd, val = null) { 
@@ -105,7 +114,6 @@
             const cats = { accounting: "Accounting", admin: "Administration", booking: "Booking", quotes: "Quotes", staffing: "Staffing", ops: "Operations" };
             content.innerHTML = '';
 
-            // Build Skeleton
             Object.keys(cats).forEach(cat => {
                 const sec = document.createElement('div');
                 sec.className = 'manual-section';
@@ -120,7 +128,6 @@
 
                 const entry = document.createElement('div');
                 entry.className = 'app-entry';
-                // Loads the fallback text from nav.js in case Firebase hasn't saved anything yet
                 const fallbackText = link.getAttribute('data-manual') || link.getAttribute('data-desc') || "Loading from cloud...";
 
                 entry.innerHTML = `
@@ -134,14 +141,12 @@
                 document.getElementById(`sec-${type}`).appendChild(entry);
             });
 
-            // Clean empty sections
             Object.keys(cats).forEach(cat => {
                 if (document.getElementById(`sec-${cat}`).children.length === 0) {
                     document.getElementById(`parent-${cat}`).remove();
                 }
             });
 
-            // FETCH FROM CLOUD
             try {
                 const snapshot = await db.ref('wet_manual_docs').once('value');
                 const cloudData = snapshot.val();
@@ -155,7 +160,7 @@
                     });
                 }
             } catch (error) {
-                console.error("Error loading manual from Firebase:", error);
+                console.error("Error loading manual:", error);
             }
 
             return true;
@@ -171,31 +176,39 @@
                 dataToSave[id] = box.innerHTML;
             });
 
-            // Push to Firebase Realtime Database
-            db.ref('wet_manual_docs').set(dataToSave)
-                .then(() => {
-                    btn.innerText = '✅ SAVED TO CLOUD';
-                    btn.style.background = '#059669';
-                    setTimeout(() => {
-                        btn.innerText = '💾 SAVE TO CLOUD';
-                        btn.style.background = '';
-                    }, 2000);
-                })
-                .catch((error) => {
-                    console.error("Save failed:", error);
-                    btn.innerText = '❌ ERROR SAVING';
-                    btn.style.background = '#ef4444';
-                    
-                    // Specific error handling for permissions
-                    if(error.message.includes('permission_denied')) {
-                        alert("Permission Denied: Please check your Firebase Database Rules. They need to be set to true for read and write.");
-                    }
+            // 5 SECOND TIMEOUT SO IT DOESNT HANG FOREVER
+            const timeout = new Promise((resolve, reject) => {
+                setTimeout(() => reject(new Error("Timeout: Could not connect to Database. Check your URL or Rules.")), 5000);
+            });
 
-                    setTimeout(() => {
-                        btn.innerText = '💾 TRY AGAIN';
-                        btn.style.background = '';
-                    }, 3000);
-                });
+            Promise.race([
+                db.ref('wet_manual_docs').set(dataToSave),
+                timeout
+            ])
+            .then(() => {
+                btn.innerText = '✅ SAVED TO CLOUD';
+                btn.style.background = '#059669';
+                setTimeout(() => {
+                    btn.innerText = '💾 SAVE TO CLOUD';
+                    btn.style.background = '';
+                }, 2000);
+            })
+            .catch((error) => {
+                console.error("Save failed:", error);
+                
+                if(error.message.includes('permission_denied')) {
+                    alert("Firebase Rules Error: You need to set .read and .write to true in your Firebase Console.");
+                } else {
+                    alert(error.message);
+                }
+
+                btn.innerText = '❌ ERROR';
+                btn.style.background = '#ef4444';
+                setTimeout(() => {
+                    btn.innerText = '💾 TRY AGAIN';
+                    btn.style.background = '';
+                }, 3000);
+            });
         }
 
         function searchManual() {
