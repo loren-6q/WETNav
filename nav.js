@@ -89,7 +89,7 @@ const renderNav = () => {
         let items = "";
         if (['BOSS', 'REC', 'BAR'].includes(user)) items += `<a href="#" data-type="ops" data-icon="💳" data-desc="Point of sale for bar and shop." data-manual="Transaction tool.">POS</a>`;
         if (['BOSS', 'REC', 'BAR', 'OA'].includes(user)) items += `<a href="${fix('https://bar-stock-nine.vercel.app/')}" data-type="ops" data-icon="🍺" data-desc="Inventory and stock check." data-manual="Sunday counts.">Stock</a>`;
-        if (['BOSS', 'OA'].includes(user)) items += `<a href="${fix('https://loren-6q.github.io/Full-Moon-Week-Schedule/')}" data-type="ops" data-icon="🌕" data-desc="FMW Instagram publishing tool." data-manual="Social scheduling.">FMW</a>`;
+        if (['BOSS', 'OA'].includes(user)) items += `<a href="${fix('https://loren-6q.github.io/Full-Moon-Week-Schedule/fmw.html')}" data-type="ops" data-icon="🌕" data-desc="FMW Instagram publishing tool." data-manual="Social scheduling.">FMW</a>`;
         if (['BOSS', 'REC', 'HK'].includes(user)) items += `<a href="${fix('https://loren-6q.github.io/WETDoors/')}" data-type="ops" data-icon="🔒" data-desc="Room access and security locks." data-manual="Room security.">Doors</a>`;
         html += `<div class="nav-item"><span class="drop-btn">Ops ▾</span><div class="dropdown-content">${items}</div></div>`;
     }
