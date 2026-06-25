@@ -81,7 +81,7 @@ const renderNav = () => {
 
     if (['BOSS', 'REC', 'OA'].includes(user)) {
         let items = `<a href="${fix('https://loren-6q.github.io/WETvCal/')}" data-type="staffing" data-icon="🗓️" data-desc="Calendar for stay dates of temp workers." data-manual="Internal stays.">V Cal</a>` +
-                    `<a href="${fix('https://staff-scheduler.onrender.com/')}" target="_blank" data-type="staffing" data-icon="📅" data-desc="Schedule part-time staff roster." data-manual="Weekly roster.">Scheduler</a>`;
+                    `<a href="${fix('https://loren-6q.github.io/VolSched/')}" target="_blank" data-type="staffing" data-icon="📅" data-desc="Schedule part-time staff roster." data-manual="Weekly roster.">Scheduler</a>`;
         html += `<div class="nav-item"><span class="drop-btn">Staffing ▾</span><div class="dropdown-content">${items}</div></div>`;
     }
 
